@@ -2,30 +2,76 @@
     ViewBag.Title = "Home Page";
 }
 
-<div class="jumbotron">
-    <h1>ASP.NET</h1>
-    <p class="lead">ASP.NET is a free web framework for building great Web sites and Web applications using HTML, CSS and JavaScript.</p>
-    <p><a href="https://asp.net" class="btn btn-primary btn-lg">Learn more &raquo;</a></p>
-</div>
+<html>
+<head>
+    <style type="text/css">
+        #podela {
+            float: left;
+            height: 400px;
+            width: 400px;
+            margin-top: 40px;
+            margin-left: 70px;
+        }
 
-<div class="row">
-    <div class="col-md-4">
-        <h2>Getting started</h2>
-        <p>
-            ASP.NET MVC gives you a powerful, patterns-based way to build dynamic websites that
-            enables a clean separation of concerns and gives you full control over markup
-            for enjoyable, agile development.
-        </p>
-        <p><a class="btn btn-default" href="https://go.microsoft.com/fwlink/?LinkId=301865">Learn more &raquo;</a></p>
+        .button {
+            border: 2px solid #008CBA;
+            border-radius: 50%;
+            background-color: white;
+            color: black;
+            padding: 16px 32px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 16px;
+            margin: 4px 2px;
+            transition-duration: 0.4s;
+            cursor: pointer;
+        }
+
+            .button:hover {
+                background-color: #008CBA;
+                color: white;
+            }
+
+        td {
+            padding-top: 2px;
+            padding-bottom: 2px;
+            padding-right: 2px;
+            padding-left: 2px;
+        }
+
+            td:first-child {
+                padding-left: 2px;
+                padding-right: 0;
+            }
+    </style>
+</head>
+<body>
+    <div class="jumbotron">
+        <div id="podela">
+            <h1>Prijava</h1><br />
+            <form action="~/Home/Prijava" method="post">
+                <table>
+                    <tr>
+                        <td><label>E-mail adresa: </label></td>
+                        <td><input type="email" name="email" required="required" /></td>
+                    </tr>
+                    <tr>
+                        <td><label>Lozinka: </label></td>
+                        <td><input type="password" name="lozinka" required="required" /></td>
+                    </tr>
+                </table>
+                <br />
+                <input type="submit" class="button" value="Prijava" />
+                <h2>@ViewBag.prijava</h2>
+            </form>
+        </div>
+        <div id="podela">
+            <h1>Registracija</h1><br />
+            <form action="~/Home/Registracija" method="post">
+                <input type="submit" class="button" value="Registruj se" />
+            </form>
+        </div>
     </div>
-    <div class="col-md-4">
-        <h2>Get more libraries</h2>
-        <p>NuGet is a free Visual Studio extension that makes it easy to add, remove, and update libraries and tools in Visual Studio projects.</p>
-        <p><a class="btn btn-default" href="https://go.microsoft.com/fwlink/?LinkId=301866">Learn more &raquo;</a></p>
-    </div>
-    <div class="col-md-4">
-        <h2>Web Hosting</h2>
-        <p>You can easily find a web hosting company that offers the right mix of features and price for your applications.</p>
-        <p><a class="btn btn-default" href="https://go.microsoft.com/fwlink/?LinkId=301867">Learn more &raquo;</a></p>
-    </div>
-</div>
+</body>
+</html>

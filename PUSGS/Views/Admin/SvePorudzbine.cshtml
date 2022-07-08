@@ -1,0 +1,87 @@
+﻿
+@{
+    ViewBag.Title = "SvePorudzbine";
+}
+<html>
+<head>
+    <style type="text/css">
+        #podela {
+            float: left;
+            height: 600px;
+            width: 480px;
+            margin-top: 40px;
+            margin-left: 20px;
+        }
+
+        .button {
+            border: 2px solid #008CBA;
+            border-radius: 50%;
+            background-color: white;
+            color: black;
+            padding: 16px 32px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 16px;
+            margin: 4px 2px;
+            transition-duration: 0.4s;
+            cursor: pointer;
+        }
+
+            .button:hover {
+                background-color: #008CBA;
+                color: white;
+            }
+
+        td {
+            padding-top: 2px;
+            padding-bottom: 2px;
+            padding-right: 2px;
+            padding-left: 2px;
+        }
+
+            td:first-child {
+                padding-left: 2px;
+                padding-right: 0;
+            }
+
+        img {
+            border-color: #008CBA;
+            border: 2px solid #008CBA;
+            border-radius: 50%;
+            height: 60px;
+            width: 120px;
+        }
+
+        h1 {
+            padding-top: 20px;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <div class="navbar navbar-inverse navbar-fixed-top">
+        <div class="container">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                @Html.ActionLink("Povratak na pocetnu", "Index", "Home", new { area = "" }, new { @class = "navbar-brand" })
+            </div>
+            <div class="navbar-collapse collapse">
+                <ul class="nav navbar-nav">
+                    <li>@Html.ActionLink("Profil", "Index", "Admin")</li>
+                    <li>@Html.ActionLink("Verifikacija", "Verifikacija", "Admin")</li>
+                    <li>@Html.ActionLink("Sve porudzbine", "SvePorudzbine", "Admin")</li>
+                    <li>@Html.ActionLink("Dodavanje proizvoda", "DodavanjeProizvoda", "Admin")</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <h1>Sve porudzbine</h1>
+
+</body>
+</html>

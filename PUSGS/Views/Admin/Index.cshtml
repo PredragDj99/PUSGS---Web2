@@ -1,0 +1,166 @@
+﻿
+@{
+    ViewBag.Title = "Index";
+}
+<html>
+<head>
+    <style type="text/css">
+        #first {
+            margin-top: 20px;
+            padding-left: 10px; /*od ivice diva*/
+            padding-right: 10px;
+            width: auto;
+            height: auto;
+            float: left;
+        }
+
+        #second {
+            /* border: 3px solid red; */
+            float: right;
+            margin-top: 20px;
+            padding-left: 10px; /*od ivice diva*/
+            padding-right: 10px;
+        }
+
+        .button {
+            border: 2px solid #008CBA;
+            border-radius: 50%;
+            background-color: white;
+            color: black;
+            padding: 16px 32px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 16px;
+            margin: 4px 2px;
+            transition-duration: 0.4s;
+            cursor: pointer;
+        }
+
+            .button:hover {
+                background-color: #008CBA;
+                color: white;
+            }
+
+        table, th, td {
+            border: 1px solid;
+            text-align: center;
+            padding-left: 10px;
+            padding-right: 10px;
+            padding-top: 4px;
+            padding-bottom: 3px;
+        }
+
+        tr:nth-child(even) {
+            background-color: #f2f2f2
+        }
+
+        img {
+            border-color: #008CBA;
+            border: 2px solid #008CBA;
+            border-radius: 50%;
+            height: 60px;
+            width: 120px;
+        }
+
+        h1 {
+            padding-top: 20px;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <div class="navbar navbar-inverse navbar-fixed-top">
+        <div class="container">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                @Html.ActionLink("Povratak na pocetnu", "Index", "Home", new { area = "" }, new { @class = "navbar-brand" })
+            </div>
+            <div class="navbar-collapse collapse">
+                <ul class="nav navbar-nav">
+                    <li>@Html.ActionLink("Profil", "Index", "Admin")</li>
+                    <li>@Html.ActionLink("Verifikacija", "Verifikacija", "Admin")</li>
+                    <li>@Html.ActionLink("Sve porudzbine", "SvePorudzbine", "Admin")</li>
+                    <li>@Html.ActionLink("Dodavanje proizvoda", "DodavanjeProizvoda", "Admin")</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <h1>Profil</h1>
+
+
+    <div id="first">
+        <table>
+            <tr>
+                <th>Trenutan izgled profila</th>
+            </tr>
+            <tr><td>@ViewBag.korisnik.KorisnickoIme</td></tr>
+            <tr><td>@ViewBag.korisnik.Email</td></tr>
+            <tr><td>@ViewBag.korisnik.Lozinka</td></tr>
+            <tr><td>@ViewBag.korisnik.Ime</td></tr>
+            <tr><td>@ViewBag.korisnik.Prezime</td></tr>
+            <tr><td>@Convert.ToDateTime(@ViewBag.korisnik.DatumRodjenja).ToString("dd/MM/yyyy")</td></tr>
+            <tr><td>@ViewBag.korisnik.Adresa</td></tr>
+            <tr><td>@ViewBag.korisnik.TipKorisnika</td></tr>
+            <tr><td>@ViewBag.korisnik.Slika</td></tr>
+        </table>
+    </div>
+
+    <div id="second">
+        <form action="~/Admin/IzmeniProfil" method="post">
+            <table>
+                <tr>
+                    <td><label>Korisnicko ime: </label></td>
+                    <td><input type="text" name="korisnickoIme" value="@ViewBag.korisnik.KorisnickoIme" required="required" /></td>
+                </tr>
+                <tr>
+                    <td><label>Email: </label></td>
+                    <td><input type="email" name="email" pattern="^[a-zA-Z0-9._+-]+&#64;[a-zA-Z0-9.-]+\.[a-zA-Z]{2,9}$" value="@ViewBag.korisnik.Email" required="required" /></td>
+                </tr>
+                <tr>
+                    <td><label>Lozinka: </label></td>
+                    <td><input type="password" name="lozinka" value="@ViewBag.korisnik.Lozinka" required="required" /></td>
+                </tr>
+                <tr>
+                    <td><label>Potvrda lozinke: </label></td>
+                    <td><input type="password" name="potvrdaLozinke" value="@ViewBag.korisnik.PotvrdaLozinke" required="required" /></td>
+                </tr>
+                <tr>
+                    <td><label>Ime: </label></td>
+                    <td><input type="text" name="ime" value="@ViewBag.korisnik.Ime" required="required" /></td>
+                </tr>
+                <tr>
+                    <td><label>Prezime: </label></td>
+                    <td><input type="text" name="prezime" value="@ViewBag.korisnik.Prezime" required="required" /></td>
+                </tr>
+                <tr>
+                    <td><label>Datum rodjenja: </label></td>
+                    <td><input type="date" name="datumRodjenja" required="required" /></td>
+                </tr>
+                <tr>
+                    <td><label>Adresa: </label></td>
+                    <td><input type="text" name="adresa" value="@ViewBag.korisnik.Adresa" required="required" /></td>
+                </tr>
+                <tr>
+                    <td><label>Tip korisnika: </label></td>
+                    <td><input type="text" name="tipKorisnika" value="@ViewBag.korisnik.TipKorisnika" required="required" /></td>
+                </tr>
+                <tr>
+                    <td><label>Slika(opciono): </label></td>
+                    <td>
+                        <input type="file" name="file" accept="image/*">
+                    </td>
+                </tr>
+                <tr><td colspan="2"><input type="submit" class="button" value="Potvrdi izmenu" /></td></tr>
+            </table><br />
+        </form>
+        <h2>@ViewBag.uspesno</h2>
+    </div>
+
+</body>
+</html>

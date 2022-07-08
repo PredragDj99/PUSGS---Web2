@@ -1,0 +1,142 @@
+﻿@{
+    ViewBag.Title = "Registracija";
+}
+<html>
+<head>
+    <style type="text/css">
+        #podela {
+            float: left;
+            height: 600px;
+            width: 480px;
+            margin-top: 40px;
+            margin-left: 20px;
+        }
+
+        .button {
+            border: 2px solid #008CBA;
+            border-radius: 50%;
+            background-color: white;
+            color: black;
+            padding: 16px 32px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 16px;
+            margin: 4px 2px;
+            transition-duration: 0.4s;
+            cursor: pointer;
+        }
+
+            .button:hover {
+                background-color: #008CBA;
+                color: white;
+            }
+
+        td {
+            padding-top: 2px;
+            padding-bottom: 2px;
+            padding-right: 2px;
+            padding-left: 2px;
+        }
+
+            td:first-child {
+                padding-left: 2px;
+                padding-right: 0;
+            }
+
+        img {
+            border-color: #008CBA;
+            border: 2px solid #008CBA;
+            border-radius: 50%;
+            height: 60px;
+            width: 120px;
+        }
+    </style>
+</head>
+<body>
+    <div class="jumbotron">
+        <div id="podela">
+            <h1>Prijava</h1><br />
+            <form action="~/Home/Prijava" method="post">
+                <table>
+                    <tr>
+                        <td><label>E-mail adresa: </label></td>
+                        <td><input type="email" name="email" required="required" /></td>
+                    </tr>
+                    <tr>
+                        <td><label>Lozinka: </label></td>
+                        <td><input type="password" name="lozinka" required="required" /></td>
+                    </tr>
+                </table>
+                <br />
+                <input type="submit" class="button" value="Prijava" />
+            </form>
+            <p>Prijavi se preko Google-a</p>
+            <a href='@Url.Action("PrijavaPrekoGoogle","Home")'>
+                <img src='@Url.Content("~/Content/Images/logo.jpg")' />
+            </a><br />
+            <h2>@ViewBag.prijava</h2>
+        </div>
+        <div id="podela">
+            <h1>Registracija</h1><br />
+
+            <form action="~/Home/RegistrujSe" enctype="multipart/form-data" method="post">
+                <table>
+                    <tr>
+                        <td><label>Korisnicko ime: </label></td>
+                        <td><input type="text" name="korisnickoIme" required="required" /></td>
+                    </tr>
+                    <tr>
+                        <td><label>E-mail adresa: </label></td>
+                        <td><input type="email" name="email" required="required" /></td>
+                    </tr>
+                    <tr>
+                        <td><label>Lozinka: </label></td>
+                        <td><input type="password" name="lozinka" required="required" /></td>
+                    </tr>
+                    <tr>
+                        <td><label>Potvrdi lozinku: </label></td>
+                        <td><input type="password" name="potvrdaLozinke" required="required" /></td>
+                    </tr>
+                    <tr>
+                        <td><label>Ime: </label></td>
+                        <td><input type="text" name="ime" required="required" /></td>
+                    </tr>
+                    <tr>
+                        <td><label>Prezime: </label></td>
+                        <td><input type="text" name="prezime" required="required" /></td>
+                    </tr>
+                    <tr>
+                        <td><label>Datum rodjenja: </label></td>
+                        <td><input type="date" name="datumRodjenja" required="required" /></td>
+                    </tr>
+                    <tr>
+                        <td><label>Adresa: </label></td>
+                        <td><input type="text" name="adresa" required="required" /></td>
+                    </tr>
+                    <tr>
+                        <td><label>Tip korisnika: </label></td>
+                        <td>
+                            <select name="tipKorisnika" required="required">
+                                <option value="ADMINISTRATOR">Administrator</option>
+                                <option value="DOSTAVLJAC">Dostavljac</option>
+                                <option value="POTROSAC">Potrosac</option>
+                            </select>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><label>Slika korisnika(opciono): </label></td>
+                        <td>
+                            <input type="file" name="file" accept="image/*">
+                        </td>
+                    </tr>
+                </table><br />
+                <input type="submit" class="button" value="Registruj se" /><br />
+
+                <h2>@ViewBag.uspesno</h2>
+
+            </form>
+        </div>
+    </div>
+</body>
+</html>
