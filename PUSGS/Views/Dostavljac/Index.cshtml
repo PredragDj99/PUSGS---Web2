@@ -56,11 +56,10 @@
         }
 
         img {
-            border-color: #008CBA;
-            border: 2px solid #008CBA;
-            border-radius: 50%;
-            height: 60px;
-            width: 120px;
+            border-color: black;
+            border: 2px solid black;
+            height: 160px;
+            width: 170px;
         }
 
         h1 {
@@ -109,6 +108,8 @@
             <tr><td>@ViewBag.korisnik.TipKorisnika</td></tr>
             <tr><td>@ViewBag.korisnik.Slika</td></tr>
         </table>
+        @{string s = ViewBag.korisnik.Slika;}
+        <img src='@Url.Content($"~/Content/Images/{s}")' alt="SLIKA" />
     </div>
 
     <div id="second">
@@ -156,7 +157,7 @@
                         <input type="file" name="file" accept="image/*">
                     </td>
                 </tr>
-            <tr><td colspan="2"><input type="submit" class="button" value="Potvrdi izmenu" /></td></tr>
+                <tr><td colspan="2"><input type="submit" class="button" value="Potvrdi izmenu" /></td></tr>
             </table><br />
         </form>
         <h2>@ViewBag.uspesno</h2>

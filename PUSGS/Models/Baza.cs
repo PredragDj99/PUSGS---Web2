@@ -19,7 +19,7 @@ namespace PUSGS.Models
             {
                 try
                 {
-                    string komanda = "INSERT INTO PUSGS.dbo.Korisnik(KorisnickoIme,Email,Lozinka,Ime,Prezime,DatumRodjenja,Adresa,TipKorisnika,Slika) VALUES (@KorisnickoIme,@Email,@Lozinka,@Ime,@Prezime,@DatumRodjenja,@Adresa,@TipKorisnika,@Slika)";
+                    string komanda = "INSERT INTO PUSGS.dbo.Korisnik(KorisnickoIme,Email,Lozinka,Ime,Prezime,DatumRodjenja,Adresa,TipKorisnika,Slika,Verifikovan) VALUES (@KorisnickoIme,@Email,@Lozinka,@Ime,@Prezime,@DatumRodjenja,@Adresa,@TipKorisnika,@Slika,@Verifikovan)";
 
                     SqlCommand cmd = new SqlCommand(komanda, connection);
 
@@ -32,6 +32,7 @@ namespace PUSGS.Models
                     cmd.Parameters.AddWithValue("@Adresa", korisnik.Adresa);
                     cmd.Parameters.AddWithValue("@TipKorisnika", korisnik.TipKorisnika.ToString());
                     cmd.Parameters.AddWithValue("@Slika", korisnik.Slika);
+                    cmd.Parameters.AddWithValue("@Verifikovan", korisnik.Verifikovan);
 
                     connection.Open();
                     cmd.ExecuteNonQuery();
@@ -81,6 +82,7 @@ namespace PUSGS.Models
                             k.Adresa = dr[7].ToString();
                             k.TipKorisnika = (KorisnikType)Enum.Parse(typeof(KorisnikType), dr[8].ToString());
                             k.Slika = dr[9].ToString();
+                            k.Verifikovan = dr[10].ToString();
                         }
                     }
                     //vraca samo ID
@@ -110,7 +112,7 @@ namespace PUSGS.Models
             {
                 try
                 {
-                    string komanda = "UPDATE PUSGS.dbo.Korisnik SET KorisnickoIme=@KorisnickoIme , Email=@Email , Lozinka=@Lozinka , Ime=@Ime , Prezime=@Prezime , DatumRodjenja=@DatumRodjenja , Adresa=@Adresa , TipKorisnika=@TipKorisnika , Slika=@Slika WHERE Email=@stariEmail";
+                    string komanda = "UPDATE PUSGS.dbo.Korisnik SET KorisnickoIme=@KorisnickoIme , Email=@Email , Lozinka=@Lozinka , Ime=@Ime , Prezime=@Prezime , DatumRodjenja=@DatumRodjenja , Adresa=@Adresa , TipKorisnika=@TipKorisnika , Slika=@Slika , Verifikovan=@Verifikovan WHERE Email=@stariEmail";
 
                     SqlCommand cmd = new SqlCommand(komanda, connection);
 
@@ -123,6 +125,7 @@ namespace PUSGS.Models
                     cmd.Parameters.AddWithValue("@Adresa", novProfil.Adresa);
                     cmd.Parameters.AddWithValue("@TipKorisnika", novProfil.TipKorisnika.ToString());
                     cmd.Parameters.AddWithValue("@Slika", novProfil.Slika);
+                    cmd.Parameters.AddWithValue("@Verifikovan", novProfil.Verifikovan);
 
                     //podaci starog profila
                     cmd.Parameters.AddWithValue("@stariEmail", stariEmail);
@@ -139,6 +142,57 @@ namespace PUSGS.Models
                         connection.Close();
                     }
                     return k;
+                }
+            }
+        }
+        #endregion
+
+        #region Spisak dostavljaca
+        public static List<Korisnik> VratiSveDostavljace()
+        {
+            List<Korisnik> dostavljaci = new List<Korisnik>();
+
+            using (SqlConnection connection = new SqlConnection(myCon))
+            {
+                try
+                {
+                    string komanda = "SELECT * FROM PUSGS.dbo.Korisnik  WHERE TipKorisnika='DOSTAVLJAC' ";
+
+                    SqlCommand cmd = new SqlCommand(komanda, connection);
+
+                    connection.Open();
+                    using (SqlDataReader dr = cmd.ExecuteReader())
+                    {
+                        while (dr.Read())
+                        {
+                            Korisnik k = new Korisnik();
+
+                            string id = dr[0].ToString();
+                            k.KorisnickoIme = dr[1].ToString();
+                            k.Email = dr[2].ToString();
+                            k.Lozinka = dr[3].ToString();
+                            k.Ime = dr[4].ToString();
+                            k.Prezime = dr[5].ToString();
+                            k.DatumRodjenja = DateTime.ParseExact(dr[6].ToString(), "dd/MM/yyyy", null);
+                            k.Adresa = dr[7].ToString();
+                            k.TipKorisnika = (KorisnikType)Enum.Parse(typeof(KorisnikType), dr[8].ToString());
+                            k.Slika = dr[9].ToString();
+                            k.Verifikovan = dr[10].ToString();
+
+                            dostavljaci.Add(k);
+                        }
+                    }
+                    connection.Close();
+
+                    return dostavljaci;
+                }
+                catch (Exception ex)
+                {
+                    if (connection.State == ConnectionState.Open)
+                    {
+                        connection.Close();
+                    }
+                    return dostavljaci;
                 }
             }
         }

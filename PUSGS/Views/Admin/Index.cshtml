@@ -56,11 +56,10 @@
         }
 
         img {
-            border-color: #008CBA;
-            border: 2px solid #008CBA;
-            border-radius: 50%;
-            height: 60px;
-            width: 120px;
+            border-color: black;
+            border: 2px solid black;
+            height: 160px;
+            width: 170px;
         }
 
         h1 {
@@ -109,6 +108,8 @@
             <tr><td>@ViewBag.korisnik.TipKorisnika</td></tr>
             <tr><td>@ViewBag.korisnik.Slika</td></tr>
         </table>
+        @{string s = ViewBag.korisnik.Slika;}
+        <img src='@Url.Content($"~/Content/Images/{s}")' alt="SLIKA" />
     </div>
 
     <div id="second">

@@ -63,7 +63,7 @@ namespace PUSGS.Controllers
                     string imgext = Path.GetExtension(imgname);
                     if (imgext == ".jpg" || imgext == ".png")
                     {
-                        string imgpath = Path.Combine(Server.MapPath("~/App_Data/KorisnikSlike"), imgname);
+                        string imgpath = Path.Combine(Server.MapPath("~/Content/Images"), imgname);
 
                         if (System.IO.File.Exists(imgpath))
                         {

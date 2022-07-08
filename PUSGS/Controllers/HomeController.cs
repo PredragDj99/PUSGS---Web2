@@ -55,6 +55,7 @@ namespace PUSGS.Controllers
         }
         #endregion
 
+        //Podaci se cuvaju u bazi odmah jer ako aplikacija pukne gubim podatke
         #region Registracija
         public ActionResult Registracija()
         {
@@ -87,7 +88,7 @@ namespace PUSGS.Controllers
                 string imgext = Path.GetExtension(imgname);
                 if (imgext == ".jpg" || imgext == ".png")
                 {
-                    string imgpath = Path.Combine(Server.MapPath("~/App_Data/KorisnikSlike"), imgname);
+                    string imgpath = Path.Combine(Server.MapPath("~/Content/Images"), imgname);
 
                     if (System.IO.File.Exists(imgpath))
                     {
@@ -105,11 +106,17 @@ namespace PUSGS.Controllers
             Korisnik k = Baza.PrijaviSe(korisnik.Email, korisnik.Lozinka);
             if (k.Email == null)
             {
+                //Dostavljac nije verifikovan nakon registracije
+                if (korisnik.TipKorisnika.ToString() == "DOSTAVLJAC")
+                {
+                    korisnik.Verifikovan = "Nije verifikovan";
+                }
+
                 bool upis = Baza.DodajKorisnika(korisnik);
 
                 if (upis)
                 {
-                    ViewBag.uspesno = "Uspesno registrovan";
+                    ViewBag.uspesno = "Uspesna registracija";
                 }
                 else
                 {

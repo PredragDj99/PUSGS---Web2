@@ -8,34 +8,6 @@ namespace PUSGS.Models
 {
     public class Korisnik
     {
-        //BEZ SLIKE
-        public Korisnik(string korisnickoIme, string email, string lozinka, string potvrdaLozinke, string ime, string prezime, DateTime datumRodjenja, string adresa, KorisnikType tipKorisnika)
-        {
-            KorisnickoIme = korisnickoIme;
-            Email = email;
-            Lozinka = lozinka;
-            PotvrdaLozinke = potvrdaLozinke;
-            Ime = ime;
-            Prezime = prezime;
-            DatumRodjenja = datumRodjenja;
-            Adresa = adresa;
-            TipKorisnika = tipKorisnika;
-        }
-
-        public Korisnik(string korisnickoIme, string email, string lozinka, string potvrdaLozinke, string ime, string prezime, DateTime datumRodjenja, string adresa, KorisnikType tipKorisnika, string slika)
-        {
-            KorisnickoIme = korisnickoIme;
-            Email = email;
-            Lozinka = lozinka;
-            PotvrdaLozinke = potvrdaLozinke;
-            Ime = ime;
-            Prezime = prezime;
-            DatumRodjenja = datumRodjenja;
-            Adresa = adresa;
-            TipKorisnika = tipKorisnika;
-            Slika = slika;
-        }
-
         [Required]
         public string KorisnickoIme { get; set; }
         [Required]
@@ -56,11 +28,27 @@ namespace PUSGS.Models
         public KorisnikType TipKorisnika { get; set; }
         //nije obavezna
         public string Slika { get; set; }
-        //INSERT INTO PUSGS.dbo.Slike values('Dostavljac', (SELECT * FROM OPENROWSET(BULK N'C:\Users\Pedja\Desktop\SlikeWEB2\dostavljac.png', SINGLE_BLOB)as T1))
+        public string Verifikovan { get; set; }
 
         public Korisnik()
         {
 
+        }
+
+        //Za dostavljaca
+        public Korisnik(string korisnickoIme, string email, string lozinka, string potvrdaLozinke, string ime, string prezime, DateTime datumRodjenja, string adresa, KorisnikType tipKorisnika, string slika=null, string verifikovan=null)
+        {
+            KorisnickoIme = korisnickoIme;
+            Email = email;
+            Lozinka = lozinka;
+            PotvrdaLozinke = potvrdaLozinke;
+            Ime = ime;
+            Prezime = prezime;
+            DatumRodjenja = datumRodjenja;
+            Adresa = adresa;
+            TipKorisnika = tipKorisnika;
+            Slika = slika;
+            Verifikovan = verifikovan;
         }
     }
 }

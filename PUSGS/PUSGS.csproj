@@ -128,6 +128,7 @@
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="Models\Baza.cs" />
+    <Compile Include="Models\DostavljaciZaVerifikaciju.cs" />
     <Compile Include="Models\Korisnik.cs" />
     <Compile Include="Models\KorisnikType.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -137,7 +138,11 @@
     <Content Include="Content\bootstrap-theme.min.css" />
     <Content Include="Content\bootstrap.css" />
     <Content Include="Content\bootstrap.min.css" />
+    <Content Include="Content\Images\admin.jpg" />
+    <Content Include="Content\Images\dostavljac.png" />
+    <Content Include="Content\Images\female.png" />
     <Content Include="Content\Images\logo.jpg" />
+    <Content Include="Content\Images\male.png" />
     <Content Include="favicon.ico" />
     <Content Include="fonts\glyphicons-halflings-regular.svg" />
     <Content Include="Global.asax" />
@@ -181,7 +186,7 @@
     <Content Include="Views\Dostavljac\TrenutnaPorudzbina.cshtml" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="App_Data\KorisnikSlike\" />
+    <Folder Include="App_Data\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="fonts\glyphicons-halflings-regular.woff2" />

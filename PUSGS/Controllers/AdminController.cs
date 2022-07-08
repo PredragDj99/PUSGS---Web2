@@ -21,8 +21,24 @@ namespace PUSGS.Controllers
 
         public ActionResult Verifikacija()
         {
+            ViewBag.zaVerifikaciju = Baza.VratiSveDostavljace();
+
             return View();
         }
+
+        public ActionResult Prihvati(string email)
+        {
+            DostavljaciZaVerifikaciju.VerifikujPrihvati(email);
+
+            return RedirectToAction("Verifikacija","Admin");
+        }
+        public ActionResult Odbij(string email)
+        {
+            DostavljaciZaVerifikaciju.VerifikujOdbij(email);
+
+            return RedirectToAction("Verifikacija", "Admin");
+        }
+
 
         public ActionResult SvePorudzbine()
         {
@@ -63,7 +79,7 @@ namespace PUSGS.Controllers
                     string imgext = Path.GetExtension(imgname);
                     if (imgext == ".jpg" || imgext == ".png")
                     {
-                        string imgpath = Path.Combine(Server.MapPath("~/App_Data/KorisnikSlike"), imgname);
+                        string imgpath = Path.Combine(Server.MapPath("~/Content/Images"), imgname);
 
                         if (System.IO.File.Exists(imgpath))
                         {
