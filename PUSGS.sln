@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+VisualStudioVersion = 15.0.28307.1300
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PUSGS", "PUSGS\PUSGS.csproj", "{565DF6A1-CD2D-4D96-BF47-E9C8BA52B303}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{565DF6A1-CD2D-4D96-BF47-E9C8BA52B303}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{565DF6A1-CD2D-4D96-BF47-E9C8BA52B303}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{565DF6A1-CD2D-4D96-BF47-E9C8BA52B303}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{565DF6A1-CD2D-4D96-BF47-E9C8BA52B303}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {018CC51E-C22D-4602-A4EF-C8B2879D4337}
+	EndGlobalSection
+EndGlobal
