@@ -269,5 +269,80 @@ namespace PUSGS.Models
             }
         }
         #endregion
+
+        #region Nova porudzbina
+        public static void NovaPorudzbina(Porudzbina porudzbina)
+        {
+            using (SqlConnection connection = new SqlConnection(myCon))
+            {
+                try
+                {
+                    string komanda = "INSERT INTO PUSGS.dbo.Porudzbina(StaPorucuje,Kolicina,Adresa,Komentar,Cena,StatusPor) VALUES (@StaPorucuje,@Kolicina,@Adresa,@Komentar,@Cena,@StatusPor)";
+
+                    SqlCommand cmd = new SqlCommand(komanda, connection);
+
+                    //cmd.Parameters.AddWithValue("@ImeProizvoda", proizvod.ImeProizvoda);
+
+                    connection.Open();
+                    cmd.ExecuteNonQuery();
+                    connection.Close();
+                }
+                catch (Exception ex)
+                {
+                    if (connection.State == ConnectionState.Open)
+                    {
+                        connection.Close();
+                    }
+                }
+            }
+        }
+        #endregion
+
+        #region Sve porudzbine
+        public static List<Porudzbina> PrikazPorudzbina()
+        {
+            List<Porudzbina> porudzbine = new List<Porudzbina>();
+
+            using (SqlConnection connection = new SqlConnection(myCon))
+            {
+                try
+                {
+                    string komanda = "SELECT * FROM PUSGS.dbo.Porudzbina";
+
+                    SqlCommand cmd = new SqlCommand(komanda, connection);
+
+                    connection.Open();
+                    using (SqlDataReader dr = cmd.ExecuteReader())
+                    {
+                        while (dr.Read())
+                        {
+                            Porudzbina p = new Porudzbina();
+
+                            string id = dr[0].ToString();
+                            p.StaPorucuje = dr[1].ToString();
+                            p.Kolicina = Int32.Parse(dr[2].ToString());
+                            p.Adresa = dr[3].ToString();
+                            p.Komentar = dr[4].ToString();
+                            p.Cena = Double.Parse(dr[5].ToString());
+                            p.Status = dr[6].ToString();
+
+                            porudzbine.Add(p);
+                        }
+                    }
+                    connection.Close();
+
+                    return porudzbine;
+                }
+                catch (Exception ex)
+                {
+                    if (connection.State == ConnectionState.Open)
+                    {
+                        connection.Close();
+                    }
+                    return porudzbine;
+                }
+            }
+        }
+        #endregion
     }
 }

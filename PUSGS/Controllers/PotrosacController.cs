@@ -30,11 +30,26 @@ namespace PUSGS.Controllers
 
         public ActionResult NovaTrenutnaPorudzbina()
         {
+            //cena dostave da bude 200din
+
             return View();
         }
 
         public ActionResult PrethodnePorudzbine()
         {
+            Korisnik user = (Korisnik)Session["user"];
+            List<Porudzbina> svePorudzbine = Baza.PrikazPorudzbina();
+            List<Porudzbina> mojePorudzine = new List<Porudzbina>();
+
+            foreach (var item in svePorudzbine)
+            {
+                if(item.Adresa==user.Adresa && item.Status == "Dostavljena")
+                {
+                    mojePorudzine.Add(item);
+                }
+            }
+            ViewBag.mojePorudzbine = mojePorudzine;
+
             return View();
         }
 

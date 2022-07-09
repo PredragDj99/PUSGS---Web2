@@ -55,17 +55,17 @@ namespace PUSGS.Controllers
 
         public ActionResult NovePorudzbine()
         {
-            return View();
+            return View(); //Ne moze da radi ako nije verifikovan!!!!
         }
 
         public ActionResult MojePorudzbine()
         {
-            return View();
+            return View(); //Ne moze da radi ako nije verifikovan!!!!
         }
 
         public ActionResult TrenutnaPorudzbina()
         {
-            return View();
+            return View(); //Ne moze da radi ako nije verifikovan!!!!
         }
 
         #region Izmeni profil

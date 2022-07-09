@@ -5,52 +5,26 @@
 <html>
 <head>
     <style type="text/css">
-        #podela {
-            float: left;
-            height: 600px;
-            width: 480px;
-            margin-top: 40px;
-            margin-left: 20px;
-        }
-
-        .button {
-            border: 2px solid #008CBA;
-            border-radius: 50%;
-            background-color: white;
-            color: black;
-            padding: 16px 32px;
+        table, th, td {
+            border: 2px solid;
             text-align: center;
-            text-decoration: none;
-            display: inline-block;
-            font-size: 16px;
-            margin: 4px 2px;
-            transition-duration: 0.4s;
-            cursor: pointer;
+            padding-left: 30px;
+            padding-right: 30px;
+            padding-top: 4px;
+            padding-bottom: 3px;
+            border-left-color: blue;
+            border-right-color: blue;
+            border-top-color: blue;
+            border-bottom-color: blue;
+            font-size: 18px;
         }
 
-            .button:hover {
-                background-color: #008CBA;
-                color: white;
-            }
-
-        td {
-            padding-top: 2px;
-            padding-bottom: 2px;
-            padding-right: 2px;
-            padding-left: 2px;
+        th{
+            background-color: lightskyblue;
         }
 
-            td:first-child {
-                padding-left: 2px;
-                padding-right: 0;
-            }
-
-        img {
-            border-color: #008CBA;
-            border: 2px solid #008CBA;
-            border-radius: 50%;
-            height: 60px;
-            width: 120px;
+        tr:nth-child(even) {
+            background-color: #f2f2f2;
         }
 
         h1 {
@@ -82,7 +56,28 @@
         </div>
     </div>
 
-    <h1>Sve porudzbine</h1>
+    <h1>Sve porudzbine</h1><br />
 
+    <table>
+        <tr>
+            <th>Sta porucuje</th>
+            <th>Kolicina</th>
+            <th>Adresa</th>
+            <th>Komentar</th>
+            <th>Cena</th>
+            <th>Status porudzbine</th>
+        </tr>
+        @foreach (var item in ViewBag.prikazPorudzbina)
+        {
+            <tr>
+                <td>@item.StaPorucuje</td>
+                <td>@item.Kolicina</td>
+                <td>@item.Adresa</td>
+                <td>@item.Komentar</td>
+                <td>@item.Cena</td>
+                <td>@item.Status</td>
+            </tr>
+        }
+    </table>
 </body>
 </html>

@@ -50,17 +50,23 @@ namespace PUSGS.Controllers
         }
         #endregion
 
+        #region Prikaz svih porudzbina
         public ActionResult SvePorudzbine()
         {
+            List<Porudzbina> svePorudzbine = Baza.PrikazPorudzbina();
+
+            ViewBag.prikazPorudzbina = svePorudzbine;
+
             return View();
         }
+        #endregion
 
+        #region Dodaj proizvod
         public ActionResult DodavanjeProizvoda()
         {
             return View();
         }
 
-        #region Dodaj proizvod
         public ActionResult DodajProizvod(Proizvod proizvod)
         {
             if(proizvod.Cena == 0)

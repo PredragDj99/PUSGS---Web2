@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Web;
 
@@ -19,8 +20,11 @@ namespace PUSGS.Models
 
         }
 
+        [Required]
         public string ImeProizvoda { get; set; }
+        [Required]
         public double Cena { get; set; }
+        [Required]
         public string Sastojci { get; set; }
     }
 }
