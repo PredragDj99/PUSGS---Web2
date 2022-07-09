@@ -13,11 +13,45 @@ namespace PUSGS.Controllers
         // GET: Dostavljac
         public ActionResult Index()
         {
+            #region Status verifikacije
             Korisnik user = (Korisnik)Session["user"];
             ViewBag.korisnik = user;
 
+            if (user.TipKorisnika.ToString() == "DOSTAVLJAC")
+            {
+                List<Korisnik> dostavljaci= Baza.VratiSveDostavljace();
+                foreach (var item in dostavljaci)
+                {
+                    if (item.Email == user.Email)
+                    {
+                        if (item.Verifikovan == "Prihvacen")
+                        {
+                            ViewBag.statusVerifikacije = "Zahtev je prihvacen";
+                        }
+                        else if(item.Verifikovan == "Odbijen")
+                        {
+                            ViewBag.statusVerifikacije = "Zahtev je odbijen";
+                        }
+                        else
+                        {
+                            ViewBag.statusVerifikacije = "Zahtev se procesira";
+                        }
+                    }
+                }
+            }
+            #endregion
+
             return View();
         }
+
+        #region Log out
+        public ActionResult LogOut()
+        {
+            Session["user"] = null;
+
+            return RedirectToAction("Index", "Home");
+        }
+        #endregion
 
         public ActionResult NovePorudzbine()
         {

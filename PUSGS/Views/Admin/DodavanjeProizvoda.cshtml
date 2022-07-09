@@ -5,14 +5,6 @@
 <html>
 <head>
     <style type="text/css">
-        #podela {
-            float: left;
-            height: 600px;
-            width: 480px;
-            margin-top: 40px;
-            margin-left: 20px;
-        }
-
         .button {
             border: 2px solid #008CBA;
             border-radius: 50%;
@@ -37,7 +29,7 @@
             padding-top: 2px;
             padding-bottom: 2px;
             padding-right: 2px;
-            padding-left: 2px;
+            padding-left: 15px;
         }
 
             td:first-child {
@@ -45,17 +37,20 @@
                 padding-right: 0;
             }
 
-        img {
-            border-color: #008CBA;
-            border: 2px solid #008CBA;
-            border-radius: 50%;
-            height: 60px;
-            width: 120px;
+        h1{
+            padding-top:20px;
+            text-align:center;
         }
 
-        h1 {
-            padding-top: 20px;
-            text-align: center;
+        input[type="text"] {
+            width: 300px;
+            border-bottom: 2px solid red;
+            border-top:none;
+            border-left:none;
+            border-right:none;
+        }
+        label{
+            font-size:15px;
         }
     </style>
 </head>
@@ -76,12 +71,32 @@
                     <li>@Html.ActionLink("Verifikacija", "Verifikacija", "Admin")</li>
                     <li>@Html.ActionLink("Sve porudzbine", "SvePorudzbine", "Admin")</li>
                     <li>@Html.ActionLink("Dodavanje proizvoda", "DodavanjeProizvoda", "Admin")</li>
+                    <li>@Html.ActionLink("Log out", "LogOut", "Admin")</li>
                 </ul>
             </div>
         </div>
     </div>
 
-    <h1>Dodavanje proizvoda</h1>
+    <h1>Dodavanje proizvoda</h1><br />
+    
+    <form action="~/Admin/DodajProizvod" method="post">
+        <table>
+            <tr>
+                <td><label>Ime proizvoda: </label></td>
+                <td><input type="text" name="imeProizvoda" required="required" /></td>
+            </tr>
+            <tr>
+                <td><label>Cena: </label></td>
+                <td><input type="text" name="cena" required="required" /></td>
+            </tr>
+            <tr>
+                <td><label>Sastojci: </label></td>
+                <td><input type="text" name="sastojci" required="required" /></td>
+            </tr>
+        </table><br />
+        <input type="submit" class="button" value="Dodaj proizvod" />
+    </form><br /><br />
+    <h2>@ViewBag.uspesno</h2>
 
 </body>
 </html>

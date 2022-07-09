@@ -197,5 +197,77 @@ namespace PUSGS.Models
             }
         }
         #endregion
+
+        #region Postojanje proizvoda
+        public static Proizvod PostojanjeProizvoda(string imeProizvoda)
+        {
+            Proizvod p = new Proizvod();
+
+            using (SqlConnection connection = new SqlConnection(myCon))
+            {
+                try
+                {
+                    string komanda = "SELECT * FROM PUSGS.dbo.Proizvod WHERE ImeProizvoda=@ImeProizvoda";
+
+                    SqlCommand cmd = new SqlCommand(komanda, connection);
+
+                    cmd.Parameters.AddWithValue("@ImeProizvoda", imeProizvoda);
+
+                    connection.Open();
+                    using (SqlDataReader dr = cmd.ExecuteReader())
+                    {
+                        while (dr.Read())
+                        {
+                            string id = dr[0].ToString();
+                            p.ImeProizvoda = dr[1].ToString();
+                            p.Cena = Double.Parse(dr[2].ToString());
+                            p.Sastojci = dr[3].ToString();
+                        }
+                    }
+                    connection.Close();
+
+                    return p;
+                }
+                catch (Exception ex)
+                {
+                    if (connection.State == ConnectionState.Open)
+                    {
+                        connection.Close();
+                    }
+                    return p;
+                }
+            }
+        }
+        #endregion
+
+        #region Dodaj proizvod
+        public static void DodajProizvod(Proizvod proizvod)
+        {
+            using (SqlConnection connection = new SqlConnection(myCon))
+            {
+                try
+                {
+                    string komanda = "INSERT INTO PUSGS.dbo.Proizvod(ImeProizvoda,Cena,Sastojci) VALUES (@ImeProizvoda,@Cena,@Sastojci)";
+
+                    SqlCommand cmd = new SqlCommand(komanda, connection);
+
+                    cmd.Parameters.AddWithValue("@ImeProizvoda", proizvod.ImeProizvoda);
+                    cmd.Parameters.AddWithValue("@Cena", proizvod.Cena.ToString());
+                    cmd.Parameters.AddWithValue("@Sastojci", proizvod.Sastojci);
+
+                    connection.Open();
+                    cmd.ExecuteNonQuery();
+                    connection.Close();
+                }
+                catch (Exception ex)
+                {
+                    if (connection.State == ConnectionState.Open)
+                    {
+                        connection.Close();
+                    }
+                }
+            }
+        }
+        #endregion
     }
 }

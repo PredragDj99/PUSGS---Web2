@@ -19,6 +19,16 @@ namespace PUSGS.Controllers
             return View();
         }
 
+        #region Log out
+        public ActionResult LogOut()
+        {
+            Session["user"] = null;
+
+            return RedirectToAction("Index", "Home");
+        }
+        #endregion
+
+        #region Verifikacija, prihvati/odbij dostavljaca
         public ActionResult Verifikacija()
         {
             ViewBag.zaVerifikaciju = Baza.VratiSveDostavljace();
@@ -38,7 +48,7 @@ namespace PUSGS.Controllers
 
             return RedirectToAction("Verifikacija", "Admin");
         }
-
+        #endregion
 
         public ActionResult SvePorudzbine()
         {
@@ -49,6 +59,31 @@ namespace PUSGS.Controllers
         {
             return View();
         }
+
+        #region Dodaj proizvod
+        public ActionResult DodajProizvod(Proizvod proizvod)
+        {
+            if(proizvod.Cena == 0)
+            {
+                ViewBag.uspesno = "Cena mora biti uneta kao broj! Koristite '.' umesto ',' ";
+                return View("DodavanjeProizvoda");
+            }
+
+            Proizvod dodavanjeProizvoda = Baza.PostojanjeProizvoda(proizvod.ImeProizvoda);
+
+            if (dodavanjeProizvoda.ImeProizvoda==null)
+            {
+                Baza.DodajProizvod(proizvod);
+                ViewBag.uspesno = "Proizvod uspesno dodat";
+            }
+            else
+            {
+                ViewBag.uspesno = "Proizvod sa unetim nazivom vec postoji";
+            }
+
+            return View("DodavanjeProizvoda");
+        }
+        #endregion
 
         #region Izmeni profil
         [HttpPost]

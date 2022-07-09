@@ -19,6 +19,15 @@ namespace PUSGS.Controllers
             return View();
         }
 
+        #region Log out
+        public ActionResult LogOut()
+        {
+            Session["user"] = null;
+
+            return RedirectToAction("Index", "Home");
+        }
+        #endregion
+
         public ActionResult NovaTrenutnaPorudzbina()
         {
             return View();
