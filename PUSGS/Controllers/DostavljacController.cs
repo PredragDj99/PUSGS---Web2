@@ -26,7 +26,7 @@ namespace PUSGS.Controllers
                     {
                         if (item.Verifikovan == "Prihvacen")
                         {
-                            ViewBag.statusVerifikacije = "Zahtev je prihvacen";
+                            ViewBag.statusVerifikacije = "Zahtev za verifikaciju je prihvacen";
                         }
                         else if(item.Verifikovan == "Odbijen")
                         {
@@ -55,17 +55,107 @@ namespace PUSGS.Controllers
 
         public ActionResult NovePorudzbine()
         {
-            return View(); //Ne moze da radi ako nije verifikovan!!!!
+            #region Status verifikacije
+            Korisnik user = (Korisnik)Session["user"];
+            ViewBag.korisnik = user;
+
+            if (user.TipKorisnika.ToString() == "DOSTAVLJAC")
+            {
+                List<Korisnik> dostavljaci = Baza.VratiSveDostavljace();
+                foreach (var item in dostavljaci)
+                {
+                    if (item.Email == user.Email)
+                    {
+                        if (item.Verifikovan == "Odbijen")
+                        {
+                            ViewBag.statusVerifikacije = "Zahtev je odbijen";
+                            return View();
+                        }
+                        else if (item.Verifikovan == "Nije verifikovan")
+                        {
+                            ViewBag.statusVerifikacije = "Zahtev se procesira";
+                            return View();
+                        }
+                        else
+                        {
+                            ViewBag.statusVerifikacije = "Prihvacen";
+                        }
+                    }
+                }
+            }
+            #endregion
+
+            return View();
         }
 
         public ActionResult MojePorudzbine()
         {
-            return View(); //Ne moze da radi ako nije verifikovan!!!!
+            #region Status verifikacije
+            Korisnik user = (Korisnik)Session["user"];
+            ViewBag.korisnik = user;
+
+            if (user.TipKorisnika.ToString() == "DOSTAVLJAC")
+            {
+                List<Korisnik> dostavljaci = Baza.VratiSveDostavljace();
+                foreach (var item in dostavljaci)
+                {
+                    if (item.Email == user.Email)
+                    {
+                        if (item.Verifikovan == "Odbijen")
+                        {
+                            ViewBag.statusVerifikacije = "Zahtev je odbijen";
+                            return View();
+                        }
+                        else if(item.Verifikovan =="Nije verifikovan")
+                        {
+                            ViewBag.statusVerifikacije = "Zahtev se procesira";
+                            return View();
+                        }
+                        else
+                        {
+                            ViewBag.statusVerifikacije = "Prihvacen";
+                        }
+                    }
+                }
+            }
+            #endregion
+
+            return View();
         }
 
         public ActionResult TrenutnaPorudzbina()
         {
-            return View(); //Ne moze da radi ako nije verifikovan!!!!
+            #region Status verifikacije
+            Korisnik user = (Korisnik)Session["user"];
+            ViewBag.korisnik = user;
+
+            if (user.TipKorisnika.ToString() == "DOSTAVLJAC")
+            {
+                List<Korisnik> dostavljaci = Baza.VratiSveDostavljace();
+                foreach (var item in dostavljaci)
+                {
+                    if (item.Email == user.Email)
+                    {
+                        if (item.Verifikovan == "Odbijen")
+                        {
+                            ViewBag.statusVerifikacije = "Zahtev je odbijen";
+                            return View();
+                        }
+                        else if (item.Verifikovan == "Nije verifikovan")
+                        {
+                            ViewBag.statusVerifikacije = "Zahtev se procesira";
+                            return View();
+                        }
+                        else
+                        {
+                            ViewBag.statusVerifikacije = "Prihvacen";
+                        }
+                    }
+                }
+            }
+            #endregion
+
+            return View();
         }
 
         #region Izmeni profil

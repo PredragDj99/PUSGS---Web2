@@ -34,25 +34,42 @@
                 color: white;
             }
 
-        td {
-            padding-top: 2px;
-            padding-bottom: 2px;
-            padding-right: 2px;
-            padding-left: 2px;
+        table, th, td {
+            border: 2px solid;
+            text-align: center;
+            padding-left: 10px;
+            padding-right: 10px;
+            padding-top: 4px;
+            padding-bottom: 3px;
+            border-left-color: blue;
+            border-right-color: blue;
+            border-top-color: blue;
+            border-bottom-color: blue;
+            font-size: 18px;
         }
 
-            td:first-child {
-                padding-left: 2px;
-                padding-right: 0;
+        th {
+            background-color: lightskyblue;
+        }
+
+        tr:nth-child(even) {
+            background-color: #f2f2f2
+        }
+
+        .linkButton {
+            background-color: greenyellow;
+            color: black;
+            text-decoration: none;
+            font-family: Arial;
+            font-size: 15px;
+            padding: 8px 15px;
+        }
+
+            .linkButton:hover {
+                background-color: green;
+                text-decoration:none;
+                color:white;
             }
-
-        img {
-            border-color: #008CBA;
-            border: 2px solid #008CBA;
-            border-radius: 50%;
-            height: 60px;
-            width: 120px;
-        }
 
         h1 {
             padding-top: 20px;
@@ -82,8 +99,116 @@
         </div>
     </div>
 
-    <h1>Nova/Trenutna porudzbina</h1>
+    <h1>Nova porudzbina</h1><br />
 
-    <p>tekst proba</p>
+    <table>
+        <tr>
+            <th colspan="3">Meni restorana</th>
+        </tr>
+        <tr>
+            <th>Naziv proizvoda</th>
+            <th>Cena</th>
+            <th>Sastojci</th>
+        </tr>
+        @foreach (var item in ViewBag.prikazProizvoda)
+        {
+            <tr>
+                <td>@item.ImeProizvoda</td>
+                <td>@item.Cena</td>
+                <td>@item.Sastojci</td>
+                <td><a class="linkButton" href="/Potrosac/NapraviPorudzbinu?imeProizvoda=@item.ImeProizvoda&&cena=@item.Cena&&sastojci=@item.Sastojci">Dodaj u korpu</a></td>
+            </tr>
+        }
+    </table><br />
+
+    <form action="~/Potrosac/Poruci" method="post">
+        <table>
+            <tr>
+                <th colspan="2">Vasa korpa</th>
+            </tr>
+            <tr>
+                <th>Proizvod</th>
+                <th>Kolicina</th>
+            </tr>
+            @if (ViewBag.porucuje.Count != 0)
+            {
+                int brojac = 0;
+                foreach (var item in ViewBag.porucuje)
+                {
+                    brojac++;
+                    <tr>
+                        <td>
+                            <label name="proizvod" />@item.ImeProizvoda
+                        </td>
+                        @{string naziv = "Kolicina" + brojac.ToString();}
+                        <td><input type="number" name="@naziv" value="1" min="0" max="1000" /></td>
+                    </tr>
+                }
+            }
+            else
+            {
+                <tr>
+                    <td>Prazno</td>
+                    <td><input type="number" name="kolicina" min="0" max="0" /></td>
+                </tr>
+            }
+        </table><br />
+        <h3>Poruci proizvode iz korpe:</h3>
+
+        <table>
+            <tr>
+                <td><label>Na adresu:</label></td>
+                <td><input type="text" name="adresa" required="required" /></td>
+            </tr>
+            <tr>
+                <td><label>Komentar:</label></td>
+                <td><input type="text" name="komentar" /></td>
+            </tr>
+            <tr>
+                <td><label>Ukupna cena:</label></td>
+                <td><label name="ukCena" />Proizvodi + dostava(200din)</td>
+            </tr>
+            <tr>
+                <td colspan="2"><input type="submit" class="button" value="Poruci" /></td>
+            </tr>
+        </table>
+    </form><br />
+    @if (ViewBag.por != null)
+    {
+        <h2>@ViewBag.por</h2><br />
+    }
+
+    <h1>Trenutna Porudzbina</h1><br />
+    <table>
+        <tr>
+            <th colspan="6">Vasa porudzbina</th>
+        </tr>
+        @if (ViewBag.TrenutnoPoruceno != null)
+        {
+        <tr>
+            <th>Proizvodi koji su poruceni</th>
+            <th>Kolicina po proizvodu</th>
+            <th>Adresa</th>
+            <th>Komentar</th>
+            <th>Cena</th>
+            <th>Status</th>
+        </tr>
+        <tr>
+            <td>@ViewBag.TrenutnoPoruceno.StaPorucuje</td>
+            <td>@ViewBag.TrenutnoPoruceno.Kolicina</td>
+            <td>@ViewBag.TrenutnoPoruceno.Adresa</td>
+            <td>@ViewBag.TrenutnoPoruceno.Komentar</td>
+            <td>@ViewBag.TrenutnoPoruceno.Cena</td>
+            <td>@ViewBag.TrenutnoPoruceno.Status</td>
+        </tr>
+        }
+        else
+        {
+            <td colspan="6">Ceka se dostavljac da prihvati porudzbinu</td>
+        }
+    </table>
+
+
+    <br /><br /><br /><br /><br />
 </body>
 </html>

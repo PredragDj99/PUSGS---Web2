@@ -10,6 +10,10 @@ namespace PUSGS.Controllers
 {
     public class PotrosacController : Controller
     {
+        public static List<Proizvod> porucuje = new List<Proizvod>();
+        private double dostava = 200;
+        public static Porudzbina aktivna = new Porudzbina();
+
         // GET: Potrosac
         public ActionResult Index()
         {
@@ -28,13 +32,127 @@ namespace PUSGS.Controllers
         }
         #endregion
 
+        #region Kreiranje nove porudzbine
         public ActionResult NovaTrenutnaPorudzbina()
         {
-            //cena dostave da bude 200din
+            List<Proizvod> listaProizvoda = Baza.PrikazProizvoda();
+            ViewBag.prikazProizvoda = listaProizvoda;
+
+            porucuje.Clear();
+            ViewBag.porucuje = porucuje;
 
             return View();
         }
 
+        public ActionResult NapraviPorudzbinu(string imeProizvoda, string cena,string sastojci)
+        {
+            Korisnik user = (Korisnik)Session["user"];
+
+            List<Proizvod> listaProizvoda = Baza.PrikazProizvoda();
+            ViewBag.prikazProizvoda = listaProizvoda;
+
+            Proizvod p = new Proizvod(imeProizvoda, Double.Parse(cena), sastojci);
+
+            //ne mozes u korpu dodati vise proizvoda istog imena
+            bool poklapanje = false;
+            for (int i = 0; i < porucuje.Count; i++)
+            {
+                if(porucuje[i].ImeProizvoda == imeProizvoda)
+                {
+                    poklapanje = true;
+                }
+            }
+            if (!poklapanje)
+            {
+                porucuje.Add(p);
+            }
+
+            ViewBag.porucuje = porucuje;
+
+            return View("NovaTrenutnaPorudzbina");
+        }
+        #endregion
+
+        #region Poruci porudzbinu
+        public ActionResult Poruci(string adresa, string komentar, FormCollection formCollection)
+        {
+            ViewBag.TrenutnoPoruceno = aktivna;
+            Korisnik user = (Korisnik)Session["user"];
+
+            List<Proizvod> listaProizvoda = Baza.PrikazProizvoda();
+            ViewBag.prikazProizvoda = listaProizvoda;
+
+            //Liste proizvoda koji se porucuju i kolicine
+            List<string> proizod = new List<string>();
+            List<int> kolicina = new List<int>();
+
+            //cena dostave da bude 200din
+            double ukupnaCena = dostava;
+            int brojac = 0;
+            foreach (var item in porucuje)
+            {
+                brojac++;
+                string naziv = "Kolicina" + brojac.ToString();
+
+                ukupnaCena += item.Cena * Double.Parse(formCollection[naziv]);
+
+                //Liste proizvoda koji se porucuju i kolicine
+                proizod.Add(item.ImeProizvoda);
+                kolicina.Add(Int32.Parse(formCollection[naziv]));
+            }
+            //Nista nije naruceno
+            if (ukupnaCena == 200)
+            {
+                ViewBag.por = "Morate imati bar 1 proizvod da biste porucili dostavu!";
+            }
+            else if(ViewBag.TrenutnoPoruceno != null)
+            {
+                ViewBag.por = "Ne mozete imati vise porudzbina istovremeno!";
+            }
+            else
+            {
+                #region Random naziv porudzbine
+                var chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+                var stringChars = new char[8];
+                var random = new Random();
+
+                for (int i = 0; i < stringChars.Length; i++)
+                {
+                    stringChars[i] = chars[random.Next(chars.Length)];
+                }
+                string finalString = new String(stringChars);
+
+                string staPorucuje = "Por" + finalString;
+                #endregion
+
+                Porudzbina porudzbina = new Porudzbina(staPorucuje, "", adresa, komentar, ukupnaCena, "Poruceno");
+                //porudzbina, listu proizvoda, listu za kolicinu
+                Baza.NovaPorudzbina(porudzbina, proizod, kolicina);
+            }
+
+            #region Trenutno poruceno
+            var trenutno = Baza.PrikazPorudzbina();
+            foreach (var item in trenutno)
+            {
+                if (item.Status == "Poruceno" && item.Adresa==adresa)
+                {
+                    aktivna=item;
+                }
+            }
+            ViewBag.TrenutnoPoruceno = aktivna;
+            #endregion
+
+            //Prikazi sta je trenutno poruceno cim kliknem stranicu i vreme koje odbrojava
+            //stoperica krece kada dostavljac prihvati dostavu
+
+            porucuje.Clear();
+            ViewBag.porucuje = porucuje;
+            return View("NovaTrenutnaPorudzbina");
+        }
+        #endregion
+
+
+        #region Prethodne porudzbine koje su izvrsene
         public ActionResult PrethodnePorudzbine()
         {
             Korisnik user = (Korisnik)Session["user"];
@@ -52,6 +170,7 @@ namespace PUSGS.Controllers
 
             return View();
         }
+        #endregion
 
         #region Izmeni profil
         [HttpPost]

@@ -270,22 +270,117 @@ namespace PUSGS.Models
         }
         #endregion
 
+        #region Prikaz proizvoda
+        public static List<Proizvod> PrikazProizvoda()
+        {
+            List<Proizvod> spisakProizvoda = new List<Proizvod>();
+
+            using (SqlConnection connection = new SqlConnection(myCon))
+            {
+                try
+                {
+                    string komanda = "SELECT * FROM PUSGS.dbo.Proizvod";
+
+                    SqlCommand cmd = new SqlCommand(komanda, connection);
+
+                    connection.Open();
+                    using (SqlDataReader dr = cmd.ExecuteReader())
+                    {
+                        while (dr.Read())
+                        {
+                            Proizvod proizvod = new Proizvod();
+
+                            string id = dr[0].ToString();
+                            proizvod.ImeProizvoda = dr[1].ToString();
+                            proizvod.Cena = Double.Parse(dr[2].ToString());
+                            proizvod.Sastojci = dr[3].ToString();
+
+                            spisakProizvoda.Add(proizvod);
+                        }
+                    }
+                    connection.Close();
+
+                    return spisakProizvoda;
+                }
+                catch (Exception ex)
+                {
+                    if (connection.State == ConnectionState.Open)
+                    {
+                        connection.Close();
+                    }
+                    return spisakProizvoda;
+                }
+            }
+        }
+        #endregion region
+
         #region Nova porudzbina
-        public static void NovaPorudzbina(Porudzbina porudzbina)
+        public static void NovaPorudzbina(Porudzbina porudzbina, List<string> proizvod, List<int> kolicina)
         {
             using (SqlConnection connection = new SqlConnection(myCon))
             {
                 try
                 {
-                    string komanda = "INSERT INTO PUSGS.dbo.Porudzbina(StaPorucuje,Kolicina,Adresa,Komentar,Cena,StatusPor) VALUES (@StaPorucuje,@Kolicina,@Adresa,@Komentar,@Cena,@StatusPor)";
+                    string komanda = "INSERT INTO PUSGS.dbo.Porudzbina(StaPorucuje,Adresa,Komentar,Cena,StatusPor) VALUES (@StaPorucuje,@Adresa,@Komentar,@Cena,@StatusPor)";
 
                     SqlCommand cmd = new SqlCommand(komanda, connection);
 
-                    //cmd.Parameters.AddWithValue("@ImeProizvoda", proizvod.ImeProizvoda);
+                    //Sifra porucenog
+                    cmd.Parameters.AddWithValue("@StaPorucuje", porudzbina.StaPorucuje);
+                    cmd.Parameters.AddWithValue("@Adresa", porudzbina.Adresa);
+                    cmd.Parameters.AddWithValue("@Komentar", porudzbina.Komentar);
+                    cmd.Parameters.AddWithValue("@Cena", porudzbina.Cena);
+                    cmd.Parameters.AddWithValue("@StatusPor", porudzbina.Status);
 
                     connection.Open();
                     cmd.ExecuteNonQuery();
                     connection.Close();
+
+                    int j = 0;
+                    //Sada unosim u drugu tabelu proizvode i kolicinu
+                    for (int i = 0; i < kolicina.Count; i++)
+                    {
+                        if(kolicina[i] != 0)
+                        {
+                            try
+                            {
+                                if (j == 0)
+                                {
+                                    string komanda2 = "INSERT INTO PUSGS.dbo.Poruceno(StaPorucuje,Proizvod,Kolicina) VALUES (@StaPorucuje,@Proizvod,@Kolicina)";
+                                    SqlCommand cmd2 = new SqlCommand(komanda2, connection);
+                                    cmd2.Parameters.AddWithValue("@StaPorucuje", porudzbina.StaPorucuje);
+                                    cmd2.Parameters.AddWithValue("@Proizvod", proizvod[i]);
+                                    cmd2.Parameters.AddWithValue("@Kolicina", kolicina[i]);
+
+                                    connection.Open();
+                                    cmd2.ExecuteNonQuery();
+                                    connection.Close();
+                                    j++;
+                                }
+                                else
+                                {
+                                    string komanda2 = "UPDATE PUSGS.dbo.Poruceno SET Proizvod=Proizvod+@Proizvod,Kolicina=Kolicina+@Kolicina WHERE StaPorucuje=@StaPorucuje;";
+                                    SqlCommand cmd2 = new SqlCommand(komanda2, connection);
+                                    cmd2.Parameters.AddWithValue("@StaPorucuje", porudzbina.StaPorucuje);
+                                    cmd2.Parameters.AddWithValue("@Proizvod", ","+proizvod[i]);
+                                    cmd2.Parameters.AddWithValue("@Kolicina", ","+kolicina[i]);
+
+                                    connection.Open();
+                                    cmd2.ExecuteNonQuery();
+                                    connection.Close();
+                                }
+                            }
+                            catch (Exception e)
+                            {
+                                if(connection.State == ConnectionState.Open)
+                                {
+                                    connection.Close();
+                                }
+                                break;
+                            }
+                        }
+                    }
+
                 }
                 catch (Exception ex)
                 {
@@ -307,7 +402,7 @@ namespace PUSGS.Models
             {
                 try
                 {
-                    string komanda = "SELECT * FROM PUSGS.dbo.Porudzbina";
+                    string komanda = "SELECT Proizvod,Kolicina,Adresa,Komentar,Cena,StatusPor FROM PUSGS.dbo.Porudzbina JOIN PUSGS.dbo.Poruceno ON Poruceno.StaPorucuje=Porudzbina.StaPorucuje";
 
                     SqlCommand cmd = new SqlCommand(komanda, connection);
 
@@ -318,13 +413,13 @@ namespace PUSGS.Models
                         {
                             Porudzbina p = new Porudzbina();
 
-                            string id = dr[0].ToString();
-                            p.StaPorucuje = dr[1].ToString();
-                            p.Kolicina = Int32.Parse(dr[2].ToString());
-                            p.Adresa = dr[3].ToString();
-                            p.Komentar = dr[4].ToString();
-                            p.Cena = Double.Parse(dr[5].ToString());
-                            p.Status = dr[6].ToString();
+                            //string id = dr[0].ToString();
+                            p.StaPorucuje = dr[0].ToString();
+                            p.Kolicina = dr[1].ToString();
+                            p.Adresa = dr[2].ToString();
+                            p.Komentar = dr[3].ToString();
+                            p.Cena = Double.Parse(dr[4].ToString());
+                            p.Status = dr[5].ToString();
 
                             porudzbine.Add(p);
                         }

@@ -8,7 +8,7 @@ namespace PUSGS.Models
 {
     public class Porudzbina
     {
-        public Porudzbina(string staPorucuje, int kolicina, string adresa, string komentar, double cena, string status=null)
+        public Porudzbina(string staPorucuje, string kolicina, string adresa, string komentar, double cena, string status=null)
         {
             StaPorucuje = staPorucuje;
             Kolicina = kolicina;
@@ -26,7 +26,7 @@ namespace PUSGS.Models
         [Required]
         public string StaPorucuje { get; set; }
         [Required]
-        public Int32 Kolicina { get; set; }
+        public string Kolicina { get; set; }
         [Required]
         public string Adresa { get; set; }
         public string Komentar { get; set; }
