@@ -76,6 +76,22 @@ namespace PUSGS.Controllers
             {
                 return RedirectToAction("Index", "Home");
             }
+
+            #region Validacija
+            if (imeProizvoda == "")
+            {
+                return View("NovaTrenutnaPorudzbina");
+            }
+            else if (cena == "")
+            {
+                return View("NovaTrenutnaPorudzbina");
+            }
+            else if (sastojci == "")
+            {
+                return View("NovaTrenutnaPorudzbina");
+            }
+            #endregion
+
             #region Trenutno poruceno
             var trenutno = Baza.PrikazPorudzbina();
             foreach (var item in trenutno)
@@ -123,6 +139,14 @@ namespace PUSGS.Controllers
             {
                 return RedirectToAction("Index", "Home");
             }
+            #region Validacija
+            if (adresa == "")
+            {
+                ViewBag.por = "Unesite adresu!";
+                return View("NovaTrenutnaPorudzbina");
+            }
+            #endregion
+
 
             List<Proizvod> listaProizvoda = Baza.PrikazProizvoda();
             ViewBag.prikazProizvoda = listaProizvoda;
@@ -231,6 +255,65 @@ namespace PUSGS.Controllers
             {
                 return RedirectToAction("Index", "Home");
             }
+
+            #region Validacija
+            if (korisnik.KorisnickoIme == "")
+            {
+                ViewBag.uspesno = "Unesite sve podatke(slika je opciona)";
+                return View("Index");
+            }
+            else if (korisnik.Email == "")
+            {
+                ViewBag.uspesno = "Unesite sve podatke(slika je opciona)";
+                return View("Index");
+            }
+            else if (korisnik.Lozinka == "")
+            {
+                ViewBag.uspesno = "Unesite sve podatke(slika je opciona)";
+                return View("Index");
+            }
+            else if (korisnik.PotvrdaLozinke == "")
+            {
+                ViewBag.uspesno = "Unesite sve podatke(slika je opciona)";
+                return View("Index");
+            }
+            else if (korisnik.Prezime == "")
+            {
+                ViewBag.uspesno = "Unesite sve podatke(slika je opciona)";
+                return View("Index");
+            }
+            else if (korisnik.Ime == "")
+            {
+                ViewBag.uspesno = "Unesite sve podatke(slika je opciona)";
+                return View("Index");
+            }
+            else if (korisnik.Adresa == "")
+            {
+                ViewBag.uspesno = "Unesite sve podatke(slika je opciona)";
+                return View("Index");
+            }
+            else if (korisnik.TipKorisnika.ToString() == "")
+            {
+                ViewBag.uspesno = "Unesite sve podatke(slika je opciona)";
+                return View("Index");
+            }
+            else if (korisnik.DatumRodjenja.ToString().Contains("0001"))
+            {
+                ViewBag.uspesno = "Unesite sve podatke(slika je opciona)";
+                return View("Index");
+            }
+
+            if (korisnik.Lozinka != korisnik.PotvrdaLozinke)
+            {
+                ViewBag.uspesno = "Lozinka i potvrda lozinke se ne poklapaju!";
+                return View("Index");
+            }
+            if (korisnik.DatumRodjenja > DateTime.Now)
+            {
+                ViewBag.uspesno = "Ne mozete da se rodite u buducnosti :)";
+                return View("Index");
+            }
+            #endregion
 
             if (korisnik.PotvrdaLozinke != korisnik.Lozinka)
             {

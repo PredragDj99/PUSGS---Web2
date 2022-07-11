@@ -277,6 +277,64 @@ namespace PUSGS.Controllers
             {
                 return RedirectToAction("Index", "Home");
             }
+            #region Validacija
+            if (korisnik.KorisnickoIme == "")
+            {
+                ViewBag.uspesno = "Unesite sve podatke(slika je opciona)";
+                return View("Index");
+            }
+            else if (korisnik.Email == "")
+            {
+                ViewBag.uspesno = "Unesite sve podatke(slika je opciona)";
+                return View("Index");
+            }
+            else if (korisnik.Lozinka == "")
+            {
+                ViewBag.uspesno = "Unesite sve podatke(slika je opciona)";
+                return View("Index");
+            }
+            else if (korisnik.PotvrdaLozinke == "")
+            {
+                ViewBag.uspesno = "Unesite sve podatke(slika je opciona)";
+                return View("Index");
+            }
+            else if (korisnik.Prezime == "")
+            {
+                ViewBag.uspesno = "Unesite sve podatke(slika je opciona)";
+                return View("Index");
+            }
+            else if (korisnik.Ime == "")
+            {
+                ViewBag.uspesno = "Unesite sve podatke(slika je opciona)";
+                return View("Index");
+            }
+            else if (korisnik.Adresa == "")
+            {
+                ViewBag.uspesno = "Unesite sve podatke(slika je opciona)";
+                return View("Index");
+            }
+            else if (korisnik.TipKorisnika.ToString() == "")
+            {
+                ViewBag.uspesno = "Unesite sve podatke(slika je opciona)";
+                return View("Index");
+            }
+            else if (korisnik.DatumRodjenja.ToString().Contains("0001"))
+            {
+                ViewBag.uspesno = "Unesite sve podatke(slika je opciona)";
+                return View("Index");
+            }
+
+            if (korisnik.Lozinka != korisnik.PotvrdaLozinke)
+            {
+                ViewBag.uspesno = "Lozinka i potvrda lozinke se ne poklapaju!";
+                return View("Index");
+            }
+            if (korisnik.DatumRodjenja > DateTime.Now)
+            {
+                ViewBag.uspesno = "Ne mozete da se rodite u buducnosti :)";
+                return View("Index");
+            }
+            #endregion
 
             if (korisnik.PotvrdaLozinke != korisnik.Lozinka)
             {

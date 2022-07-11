@@ -19,6 +19,19 @@ namespace PUSGS.Controllers
         #region Prijava
         public ActionResult Prijava(string email, string lozinka)
         {
+            #region Validacija
+            if(email == "")
+            {
+                ViewBag.prijava = "Pogresno uneti podaci za prijavu!";
+                return View("Registracija");
+            }
+            else if (lozinka == "")
+            {
+                ViewBag.prijava = "Pogresno uneti podaci za prijavu!";
+                return View("Registracija");
+            }
+            #endregion
+
             Korisnik prijavljenKorisnik = Baza.PrijaviSe(email, lozinka);
 
             if (prijavljenKorisnik.Email == email)
@@ -66,6 +79,52 @@ namespace PUSGS.Controllers
         public ActionResult RegistrujSe(Korisnik korisnik, HttpPostedFileBase file)
         {
             #region Validacija
+            if (korisnik.KorisnickoIme == "")
+            {
+                ViewBag.uspesno = "Unesite sve podatke(slika je opciona)";
+                return View("Registracija");
+            }
+            else if (korisnik.Email == "")
+            {
+                ViewBag.uspesno = "Unesite sve podatke(slika je opciona)";
+                return View("Registracija");
+            }
+            else if (korisnik.Lozinka == "")
+            {
+                ViewBag.uspesno = "Unesite sve podatke(slika je opciona)";
+                return View("Registracija");
+            }
+            else if (korisnik.PotvrdaLozinke == "")
+            {
+                ViewBag.uspesno = "Unesite sve podatke(slika je opciona)";
+                return View("Registracija");
+            }
+            else if (korisnik.Prezime == "")
+            {
+                ViewBag.uspesno = "Unesite sve podatke(slika je opciona)";
+                return View("Registracija");
+            }
+            else if (korisnik.Ime == "")
+            {
+                ViewBag.uspesno = "Unesite sve podatke(slika je opciona)";
+                return View("Registracija");
+            }
+            else if (korisnik.Adresa == "")
+            {
+                ViewBag.uspesno = "Unesite sve podatke(slika je opciona)";
+                return View("Registracija");
+            }
+            else if (korisnik.TipKorisnika.ToString() == "")
+            {
+                ViewBag.uspesno = "Unesite sve podatke(slika je opciona)";
+                return View("Registracija");
+            }
+            else if (korisnik.DatumRodjenja.ToString().Contains("0001"))
+            {
+                ViewBag.uspesno = "Unesite sve podatke(slika je opciona)";
+                return View("Registracija");
+            }
+
             if (korisnik.Lozinka != korisnik.PotvrdaLozinke)
             {
                 ViewBag.uspesno = "Lozinka i potvrda lozinke se ne poklapaju!";
