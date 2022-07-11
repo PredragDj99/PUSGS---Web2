@@ -14,6 +14,10 @@ namespace PUSGS.Controllers
         public ActionResult Index()
         {
             Korisnik user = (Korisnik)Session["user"];
+            if (user == null || user.TipKorisnika.ToString() != "ADMINISTRATOR")
+            {
+                return RedirectToAction("Index", "Home");
+            }
             ViewBag.korisnik = user;
 
             return View();
@@ -31,6 +35,11 @@ namespace PUSGS.Controllers
         #region Verifikacija, prihvati/odbij dostavljaca
         public ActionResult Verifikacija()
         {
+            Korisnik user = (Korisnik)Session["user"];
+            if (user == null || user.TipKorisnika.ToString() != "ADMINISTRATOR")
+            {
+                return RedirectToAction("Index", "Home");
+            }
             ViewBag.zaVerifikaciju = Baza.VratiSveDostavljace();
 
             return View();
@@ -38,12 +47,24 @@ namespace PUSGS.Controllers
 
         public ActionResult Prihvati(string email)
         {
+            Korisnik user = (Korisnik)Session["user"];
+            if (user == null || user.TipKorisnika.ToString() != "ADMINISTRATOR")
+            {
+                return RedirectToAction("Index", "Home");
+            }
+
             DostavljaciZaVerifikaciju.VerifikujPrihvati(email);
 
             return RedirectToAction("Verifikacija","Admin");
         }
         public ActionResult Odbij(string email)
         {
+            Korisnik user = (Korisnik)Session["user"];
+            if (user == null || user.TipKorisnika.ToString() != "ADMINISTRATOR")
+            {
+                return RedirectToAction("Index", "Home");
+            }
+
             DostavljaciZaVerifikaciju.VerifikujOdbij(email);
 
             return RedirectToAction("Verifikacija", "Admin");
@@ -53,6 +74,11 @@ namespace PUSGS.Controllers
         #region Prikaz svih porudzbina
         public ActionResult SvePorudzbine()
         {
+            Korisnik user = (Korisnik)Session["user"];
+            if (user == null || user.TipKorisnika.ToString() != "ADMINISTRATOR")
+            {
+                return RedirectToAction("Index", "Home");
+            }
             List<SpojeneTabele> svePorudzbine = Baza.PrikazPorudzbina();
 
             ViewBag.prikazPorudzbina = svePorudzbine;
@@ -64,12 +90,23 @@ namespace PUSGS.Controllers
         #region Dodaj proizvod
         public ActionResult DodavanjeProizvoda()
         {
+            Korisnik user = (Korisnik)Session["user"];
+            if (user == null || user.TipKorisnika.ToString() != "ADMINISTRATOR")
+            {
+                return RedirectToAction("Index", "Home");
+            }
             return View();
         }
 
         public ActionResult DodajProizvod(Proizvod proizvod)
         {
-            if(proizvod.Cena == 0)
+            Korisnik user = (Korisnik)Session["user"];
+            if (user == null || user.TipKorisnika.ToString() != "ADMINISTRATOR")
+            {
+                return RedirectToAction("Index", "Home");
+            }
+
+            if (proizvod.Cena == 0)
             {
                 ViewBag.uspesno = "Cena mora biti uneta kao broj! Koristite '.' umesto ',' ";
                 return View("DodavanjeProizvoda");
@@ -96,6 +133,10 @@ namespace PUSGS.Controllers
         public ActionResult IzmeniProfil(Korisnik korisnik, HttpPostedFileBase file)
         {
             Korisnik user = (Korisnik)Session["user"];
+            if (user == null || user.TipKorisnika.ToString() != "ADMINISTRATOR")
+            {
+                return RedirectToAction("Index", "Home");
+            }
 
             if (korisnik.PotvrdaLozinke != korisnik.Lozinka)
             {

@@ -18,6 +18,10 @@ namespace PUSGS.Controllers
         public ActionResult Index()
         {
             Korisnik user = (Korisnik)Session["user"];
+            if (user == null || user.TipKorisnika.ToString() != "POTROSAC")
+            {
+                return RedirectToAction("Index", "Home");
+            }
             ViewBag.korisnik = user;
 
             return View();
@@ -36,6 +40,10 @@ namespace PUSGS.Controllers
         public ActionResult NovaTrenutnaPorudzbina()
         {
             Korisnik user = (Korisnik)Session["user"];
+            if (user == null || user.TipKorisnika.ToString() != "POTROSAC")
+            {
+                return RedirectToAction("Index", "Home");
+            }
             #region Trenutno poruceno
             var trenutno = Baza.PrikazPorudzbina();
             foreach (var item in trenutno)
@@ -64,6 +72,10 @@ namespace PUSGS.Controllers
         public ActionResult NapraviPorudzbinu(string imeProizvoda, string cena,string sastojci)
         {
             Korisnik user = (Korisnik)Session["user"];
+            if (user == null || user.TipKorisnika.ToString() != "POTROSAC")
+            {
+                return RedirectToAction("Index", "Home");
+            }
             #region Trenutno poruceno
             var trenutno = Baza.PrikazPorudzbina();
             foreach (var item in trenutno)
@@ -107,6 +119,10 @@ namespace PUSGS.Controllers
         {
             ViewBag.TrenutnoPoruceno = aktivna;
             Korisnik user = (Korisnik)Session["user"];
+            if (user == null || user.TipKorisnika.ToString() != "POTROSAC")
+            {
+                return RedirectToAction("Index", "Home");
+            }
 
             List<Proizvod> listaProizvoda = Baza.PrikazProizvoda();
             ViewBag.prikazProizvoda = listaProizvoda;
@@ -182,11 +198,14 @@ namespace PUSGS.Controllers
         }
         #endregion
 
-
         #region Prethodne porudzbine koje su izvrsene
         public ActionResult PrethodnePorudzbine()
         {
             Korisnik user = (Korisnik)Session["user"];
+            if (user == null || user.TipKorisnika.ToString() != "POTROSAC")
+            {
+                return RedirectToAction("Index", "Home");
+            }
             List<SpojeneTabele> svePorudzbine = Baza.PrikazPorudzbina();
             List<SpojeneTabele> mojePorudzine = new List<SpojeneTabele>();
 
@@ -208,6 +227,10 @@ namespace PUSGS.Controllers
         public ActionResult IzmeniProfil(Korisnik korisnik, HttpPostedFileBase file)
         {
             Korisnik user = (Korisnik)Session["user"];
+            if (user == null || user.TipKorisnika.ToString() != "POTROSAC")
+            {
+                return RedirectToAction("Index", "Home");
+            }
 
             if (korisnik.PotvrdaLozinke != korisnik.Lozinka)
             {

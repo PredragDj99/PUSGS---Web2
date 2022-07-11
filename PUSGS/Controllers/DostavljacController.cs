@@ -17,6 +17,10 @@ namespace PUSGS.Controllers
         {
             #region Status verifikacije
             Korisnik user = (Korisnik)Session["user"];
+            if (user == null || user.TipKorisnika.ToString() != "DOSTAVLJAC")
+            {
+                return RedirectToAction("Index", "Home");
+            }
             ViewBag.korisnik = user;
 
             if (user.TipKorisnika.ToString() == "DOSTAVLJAC")
@@ -60,6 +64,10 @@ namespace PUSGS.Controllers
         {
             #region Status verifikacije
             Korisnik user = (Korisnik)Session["user"];
+            if (user == null || user.TipKorisnika.ToString() != "DOSTAVLJAC")
+            {
+                return RedirectToAction("Index", "Home");
+            }
             ViewBag.korisnik = user;
 
             if (user.TipKorisnika.ToString() == "DOSTAVLJAC")
@@ -125,6 +133,10 @@ namespace PUSGS.Controllers
         public ActionResult PrihvatiDostavu(string email, string status)
         {
             Korisnik user = (Korisnik)Session["user"];
+            if (user == null || user.TipKorisnika.ToString() != "DOSTAVLJAC")
+            {
+                return RedirectToAction("Index", "Home");
+            }
 
             zauzet = "zauzet";
             List<SpojeneTabele> svePor = Baza.PrikazPorudzbina();
@@ -155,6 +167,10 @@ namespace PUSGS.Controllers
         {
             #region Status verifikacije
             Korisnik user = (Korisnik)Session["user"];
+            if (user == null || user.TipKorisnika.ToString() != "DOSTAVLJAC")
+            {
+                return RedirectToAction("Index", "Home");
+            }
             ViewBag.korisnik = user;
 
             if (user.TipKorisnika.ToString() == "DOSTAVLJAC")
@@ -204,6 +220,10 @@ namespace PUSGS.Controllers
         {
             #region Status verifikacije
             Korisnik user = (Korisnik)Session["user"];
+            if (user == null || user.TipKorisnika.ToString() != "DOSTAVLJAC")
+            {
+                return RedirectToAction("Index", "Home");
+            }
             ViewBag.korisnik = user;
 
             if (user.TipKorisnika.ToString() == "DOSTAVLJAC")
@@ -253,8 +273,12 @@ namespace PUSGS.Controllers
         public ActionResult IzmeniProfil(Korisnik korisnik, HttpPostedFileBase file)
         {
             Korisnik user = (Korisnik)Session["user"];
+            if (user == null || user.TipKorisnika.ToString() != "DOSTAVLJAC")
+            {
+                return RedirectToAction("Index", "Home");
+            }
 
-            if(korisnik.PotvrdaLozinke != korisnik.Lozinka)
+            if (korisnik.PotvrdaLozinke != korisnik.Lozinka)
             {
                 ViewBag.uspesno = "Nepoklapanje lozinki";
                 ViewBag.korisnik = user;
