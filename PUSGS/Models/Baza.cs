@@ -321,8 +321,8 @@ namespace PUSGS.Models
             {
                 try
                 {
-                    string komanda = "INSERT INTO PUSGS.dbo.Porudzbina(StaPorucuje,Adresa,Komentar,Cena,StatusPor) VALUES (@StaPorucuje,@Adresa,@Komentar,@Cena,@StatusPor)";
-
+                    string komanda = "INSERT INTO PUSGS.dbo.Porudzbina(StaPorucuje,Adresa,Komentar,Cena,StatusPor,DostavljacID) VALUES (@StaPorucuje,@Adresa,@Komentar,@Cena,@StatusPor,@DostavljacID)";
+                    
                     SqlCommand cmd = new SqlCommand(komanda, connection);
 
                     //Sifra porucenog
@@ -331,6 +331,7 @@ namespace PUSGS.Models
                     cmd.Parameters.AddWithValue("@Komentar", porudzbina.Komentar);
                     cmd.Parameters.AddWithValue("@Cena", porudzbina.Cena);
                     cmd.Parameters.AddWithValue("@StatusPor", porudzbina.Status);
+                    cmd.Parameters.AddWithValue("@DostavljacID", "niko");
 
                     connection.Open();
                     cmd.ExecuteNonQuery();
@@ -444,23 +445,64 @@ namespace PUSGS.Models
         #endregion
 
         #region Dostavljac prihvatio porudzbinu
-        public static void DostavljacPrihvatioPorudzbinu(SpojeneTabele porudzbina)
+        public static void DostavljacPrihvatioPorudzbinu(SpojeneTabele porudzbina, Korisnik korisnik)
         {
             using (SqlConnection connection = new SqlConnection(myCon))
             {
+
                 try
                 {
-                    string komanda = "UPDATE PUSGS.dbo.Porudzbina SET StatusPor=@StatusPor WHERE StaPorucuje=@StaPorucuje";
+                    string komandaTrazi = "SELECT ID FROM PUSGS.dbo.Korisnik WHERE Email=@Email";
 
-                    SqlCommand cmd = new SqlCommand(komanda, connection);
+                    SqlCommand cmdTr = new SqlCommand(komandaTrazi, connection);
 
-                    //Sifra porucenog
-                    cmd.Parameters.AddWithValue("@StaPorucuje", porudzbina.StaPorucuje);
-                    cmd.Parameters.AddWithValue("@StatusPor", porudzbina.StatusPor);
+                    cmdTr.Parameters.AddWithValue("@Email", korisnik.Email);
 
                     connection.Open();
-                    cmd.ExecuteNonQuery();
+                    int dostavljacID=0;
+                    using (SqlDataReader dr = cmdTr.ExecuteReader())
+                    {
+                        while (dr.Read())
+                        {
+                            dostavljacID = Int32.Parse(dr[0].ToString());
+                        }
+                    }
                     connection.Close();
+
+                    try
+                    {
+                        string komanda = "UPDATE PUSGS.dbo.Porudzbina SET StatusPor=@StatusPor WHERE StaPorucuje=@StaPorucuje";
+
+                        SqlCommand cmd = new SqlCommand(komanda, connection);
+
+                        //Sifra porucenog
+                        cmd.Parameters.AddWithValue("@StaPorucuje", porudzbina.StaPorucuje);
+                        cmd.Parameters.AddWithValue("@StatusPor", porudzbina.StatusPor);
+
+                        connection.Open();
+                        cmd.ExecuteNonQuery();
+                        connection.Close();
+
+                        // -----------------------------------------
+
+                        string komanda2 = "UPDATE PUSGS.dbo.Poruceno SET DostavljacID = @DostavljacID WHERE StaPorucuje=@StaPorucuje";
+                        SqlCommand cmd2 = new SqlCommand(komanda2, connection);
+
+                        //Sifra porucenog
+                        cmd2.Parameters.AddWithValue("@StaPorucuje", porudzbina.StaPorucuje);
+                        cmd2.Parameters.AddWithValue("@DostavljacID", dostavljacID);
+
+                        connection.Open();
+                        cmd2.ExecuteNonQuery();
+                        connection.Close();
+                    }
+                    catch (Exception ex)
+                    {
+                        if (connection.State == ConnectionState.Open)
+                        {
+                            connection.Close();
+                        }
+                    }
                 }
                 catch (Exception ex)
                 {
@@ -468,6 +510,87 @@ namespace PUSGS.Models
                     {
                         connection.Close();
                     }
+                }
+            }
+        }
+        #endregion
+
+        #region Dostave dostavljaca
+        public static List<SpojeneTabele> PrikaziDostaveDostavljaca(Korisnik korisnik)
+        {
+            List<SpojeneTabele> porudzbine = new List<SpojeneTabele>();
+
+            using (SqlConnection connection = new SqlConnection(myCon))
+            {
+                try
+                {
+                    string komandaTrazi = "SELECT ID FROM PUSGS.dbo.Korisnik WHERE Email=@Email";
+
+                    SqlCommand cmdTr = new SqlCommand(komandaTrazi, connection);
+
+                    cmdTr.Parameters.AddWithValue("@Email", korisnik.Email);
+
+                    connection.Open();
+                    int dostavljacID = 0;
+                    using (SqlDataReader dr = cmdTr.ExecuteReader())
+                    {
+                        while (dr.Read())
+                        {
+                            dostavljacID = Int32.Parse(dr[0].ToString());
+                        }
+                    }
+                    connection.Close();
+
+                    try
+                    {
+                        //Onda spojim po nazivuPorudzbine i pokupim sve potrebne podatke
+                        string komanda = "SELECT Poruceno.StaPorucuje,Poruceno.Proizvod,Poruceno.Kolicina,Porudzbina.Adresa,Porudzbina.Komentar,Porudzbina.Cena,Porudzbina.StatusPor,Poruceno.Email,Poruceno.DostavljacID FROM PUSGS.dbo.Poruceno JOIN PUSGS.dbo.Porudzbina ON Poruceno.StaPorucuje=Porudzbina.StaPorucuje WHERE Poruceno.DostavljacID=@DostavljacID";
+
+                        SqlCommand cmd = new SqlCommand(komanda, connection);
+
+                        //Sifra porucenog
+                        cmd.Parameters.AddWithValue("@DostavljacID", dostavljacID);
+
+                        connection.Open();
+                        using (SqlDataReader dr = cmd.ExecuteReader())
+                        {
+                            while (dr.Read())
+                            {
+                                SpojeneTabele proizvod = new SpojeneTabele();
+
+                                proizvod.StatusPor = dr[0].ToString();
+                                proizvod.Proizvod = dr[1].ToString();
+                                proizvod.Kolicina = dr[2].ToString();
+                                proizvod.Adresa = dr[3].ToString();
+                                proizvod.Komentar = dr[4].ToString();
+                                proizvod.Cena = Double.Parse(dr[5].ToString());
+                                proizvod.StatusPor = dr[6].ToString();
+                                proizvod.Email = dr[7].ToString();
+                                proizvod.DostavljacID = Int32.Parse(dr[8].ToString());
+
+                                porudzbine.Add(proizvod);
+                            }
+                        }
+                        connection.Close();
+
+                        return porudzbine;
+                    }
+                    catch (Exception ex)
+                    {
+                        if (connection.State == ConnectionState.Open)
+                        {
+                            connection.Close();
+                        }
+                        return porudzbine;
+                    }
+                }
+                catch (Exception ex)
+                {
+                    if (connection.State == ConnectionState.Open)
+                    {
+                        connection.Close();
+                    }
+                    return porudzbine;
                 }
             }
         }

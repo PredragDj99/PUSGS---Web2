@@ -40,7 +40,7 @@ namespace PUSGS.Controllers
             var trenutno = Baza.PrikazPorudzbina();
             foreach (var item in trenutno)
             {
-                if (item.StatusPor == "Poruceno" && item.Email == user.Email)
+                if ((item.StatusPor == "Poruceno" || item.StatusPor == "U toku") && item.Email == user.Email)
                 {
                     aktivna = item;
                 }
@@ -68,7 +68,7 @@ namespace PUSGS.Controllers
             var trenutno = Baza.PrikazPorudzbina();
             foreach (var item in trenutno)
             {
-                if (item.StatusPor == "Poruceno" && item.Email == user.Email)
+                if ((item.StatusPor == "Poruceno" || item.StatusPor == "U toku") && item.Email == user.Email)
                 {
                     aktivna = item;
                 }

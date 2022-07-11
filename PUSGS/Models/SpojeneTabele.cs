@@ -8,7 +8,7 @@ namespace PUSGS.Models
 {
     public class SpojeneTabele
     {
-        public SpojeneTabele(string staPorucuje, string proizvod, string kolicina, string adresa, string komentar, double cena, string statusPor, string email)
+        public SpojeneTabele(string staPorucuje, string proizvod, string kolicina, string adresa, string komentar, double cena, string statusPor, string email,Int32 dostavljacID)
         {
             StaPorucuje = staPorucuje;
             Proizvod = proizvod;
@@ -18,6 +18,7 @@ namespace PUSGS.Models
             Cena = cena;
             StatusPor = statusPor;
             Email = email;
+            DostavljacID = dostavljacID;
         }
 
         public SpojeneTabele() { }
@@ -37,5 +38,7 @@ namespace PUSGS.Models
         public string StatusPor { get; set; }
         [Required]
         public string Email { get; set; }
+        [Required]
+        public Int32 DostavljacID { get; set; }
     }
 }

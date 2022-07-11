@@ -97,6 +97,19 @@ namespace PUSGS.Controllers
                     prikaz.Add(item);
                 }
             }
+
+            #region Da li postoji neka aktivna porudzbina
+            var dostavljacevePorudzbine = Baza.PrikaziDostaveDostavljaca(user);
+
+            var por = new List<SpojeneTabele>();
+            foreach (var item in dostavljacevePorudzbine)
+            {
+                if (item.StatusPor == "Dostavljena")
+                {
+                    zauzet = "zauzet";
+                }
+            }
+            #endregion
             if (zauzet == "zauzet")
             {
                 ViewBag.zauzet = "zauzet";
@@ -111,6 +124,8 @@ namespace PUSGS.Controllers
         #region Prihvati dostavu
         public ActionResult PrihvatiDostavu(string email, string status)
         {
+            Korisnik user = (Korisnik)Session["user"];
+
             zauzet = "zauzet";
             List<SpojeneTabele> svePor = Baza.PrikazPorudzbina();
             List<SpojeneTabele> prikaz = new List<SpojeneTabele>();
@@ -120,7 +135,7 @@ namespace PUSGS.Controllers
                 {
                     item.StatusPor = "U toku";
                     ViewBag.zauzet = "zauzet";
-                    Baza.DostavljacPrihvatioPorudzbinu(item);
+                    Baza.DostavljacPrihvatioPorudzbinu(item, user);
                 }
 
                 if (item.StatusPor == "Poruceno")
@@ -135,6 +150,7 @@ namespace PUSGS.Controllers
         }
         #endregion
 
+        #region Prikaz svih porudzbina ovog dostavljaca koje su dostavljene
         public ActionResult MojePorudzbine()
         {
             #region Status verifikacije
@@ -167,9 +183,23 @@ namespace PUSGS.Controllers
             }
             #endregion
 
+            var dostavljacevePorudzbine = Baza.PrikaziDostaveDostavljaca(user);
+
+            var por = new List<SpojeneTabele>();
+            foreach (var item in dostavljacevePorudzbine)
+            {
+                if (item.StatusPor == "Dostavljena")
+                {
+                    por.Add(item);
+                }
+            }
+            ViewBag.prikazKaoKodKorisnika = por;
+
             return View();
         }
+        #endregion
 
+        #region Prikaz trenutne porudzbine, isto kao kod potrosaca
         public ActionResult TrenutnaPorudzbina()
         {
             #region Status verifikacije
@@ -202,8 +232,21 @@ namespace PUSGS.Controllers
             }
             #endregion
 
+            var dostavljacevePorudzbine = Baza.PrikaziDostaveDostavljaca(user);
+
+            var por = new SpojeneTabele();
+            foreach (var item in dostavljacevePorudzbine)
+            {
+                if(item.StatusPor == "U toku")
+                {
+                    por = item;
+                }
+            }
+            ViewBag.prikazKaoKodKorisnika = por;
+
             return View();
         }
+        #endregion
 
         #region Izmeni profil
         [HttpPost]

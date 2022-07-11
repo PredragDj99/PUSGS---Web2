@@ -33,17 +33,27 @@
                 color: white;
             }
 
-        td {
-            padding-top: 2px;
-            padding-bottom: 2px;
-            padding-right: 2px;
-            padding-left: 2px;
+        table, th, td {
+            border: 2px solid;
+            text-align: center;
+            padding-left: 10px;
+            padding-right: 10px;
+            padding-top: 4px;
+            padding-bottom: 3px;
+            border-left-color: blue;
+            border-right-color: blue;
+            border-top-color: blue;
+            border-bottom-color: blue;
+            font-size: 18px;
         }
 
-            td:first-child {
-                padding-left: 2px;
-                padding-right: 0;
-            }
+        th {
+            background-color: lightskyblue;
+        }
+
+        tr:nth-child(even) {
+            background-color: #f2f2f2
+        }
 
         img {
             border-color: #008CBA;
@@ -90,7 +100,29 @@
     }
     else if (ViewBag.statusVerifikacije != "Zahtev je odbijen" && ViewBag.statusVerifikacije != "Zahtev se procesira")
     {
-
+        <table>
+            <tr>
+                <th colspan="7">Vasa trenutna porudzbina</th>
+            </tr>
+            <tr>
+                <th>Proizvodi koji su poruceni</th>
+                <th>Kolicina po proizvodu</th>
+                <th>Adresa</th>
+                <th>Email</th>
+                <th>Komentar</th>
+                <th>Cena</th>
+                <th>Status</th>
+            </tr>
+            <tr>
+                <td>@ViewBag.prikazKaoKodKorisnika.Proizvod</td>
+                <td>@ViewBag.prikazKaoKodKorisnika.Kolicina</td>
+                <td>@ViewBag.prikazKaoKodKorisnika.Adresa</td>
+                <td>@ViewBag.prikazKaoKodKorisnika.Email</td>
+                <td>@ViewBag.prikazKaoKodKorisnika.Komentar</td>
+                <td>@ViewBag.prikazKaoKodKorisnika.Cena</td>
+                <td>@ViewBag.prikazKaoKodKorisnika.StatusPor</td>
+            </tr>
+        </table>
     }
 
 </body>
