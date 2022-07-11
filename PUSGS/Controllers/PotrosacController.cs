@@ -139,6 +139,7 @@ namespace PUSGS.Controllers
             {
                 return RedirectToAction("Index", "Home");
             }
+
             #region Validacija
             if (adresa == "")
             {
@@ -146,7 +147,6 @@ namespace PUSGS.Controllers
                 return View("NovaTrenutnaPorudzbina");
             }
             #endregion
-
 
             List<Proizvod> listaProizvoda = Baza.PrikazProizvoda();
             ViewBag.prikazProizvoda = listaProizvoda;

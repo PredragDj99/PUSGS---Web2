@@ -107,6 +107,8 @@
     }
     else if (ViewBag.statusVerifikacije != "Zahtev je odbijen" && ViewBag.statusVerifikacije != "Zahtev se procesira")
     {
+        if (ViewBag.prikaz != null)
+        {
         <table>
             <tr>
                 <th>Proizvodi koji su poruceni</th>
@@ -120,7 +122,7 @@
             @foreach (var item in ViewBag.prikaz)
             {
             <tr>
-                <td>@item.StaPorucuje</td>
+                <td>@item.Proizvod</td>
                 <td>@item.Kolicina</td>
                 <td>@item.Adresa</td>
                 <td>@item.Email</td>
@@ -134,6 +136,7 @@
             </tr>
             }
         </table>
+        }
     }
 
 </body>

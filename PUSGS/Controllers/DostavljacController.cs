@@ -112,9 +112,11 @@ namespace PUSGS.Controllers
             var por = new List<SpojeneTabele>();
             foreach (var item in dostavljacevePorudzbine)
             {
-                if (item.StatusPor == "Dostavljena")
+                zauzet = "slobodan";
+                if (item.StatusPor == "U toku")
                 {
                     zauzet = "zauzet";
+                    break;
                 }
             }
             #endregion
@@ -138,7 +140,6 @@ namespace PUSGS.Controllers
                 return RedirectToAction("Index", "Home");
             }
 
-            zauzet = "zauzet";
             List<SpojeneTabele> svePor = Baza.PrikazPorudzbina();
             List<SpojeneTabele> prikaz = new List<SpojeneTabele>();
             foreach (var item in svePor)

@@ -173,43 +173,38 @@
             </tr>
         </table>
     </form><br />
-    @if (ViewBag.por != null)
+    @if (ViewBag.por != null && ViewBag.por != "Poruceno")
     {
         <h2>@ViewBag.por</h2><br />
     }
 
-    <h1>Trenutna Porudzbina</h1><br />
-    <table>
-        <tr>
-            <th colspan="7">Vasa porudzbina</th>
-        </tr>
-        @if (ViewBag.por == "Poruceno")
-        {
-        <tr>
-            <th>Proizvodi koji su poruceni</th>
-            <th>Kolicina po proizvodu</th>
-            <th>Adresa</th>
-            <th>Email</th>
-            <th>Komentar</th>
-            <th>Cena</th>
-            <th>Status</th>
-        </tr>
-        <tr>
-            <td>@ViewBag.TrenutnoPoruceno.StaPorucuje</td>
-            <td>@ViewBag.TrenutnoPoruceno.Kolicina</td>
-            <td>@ViewBag.TrenutnoPoruceno.Adresa</td>
-            <td>@ViewBag.TrenutnoPoruceno.Email</td>
-            <td>@ViewBag.TrenutnoPoruceno.Komentar</td>
-            <td>@ViewBag.TrenutnoPoruceno.Cena</td>
-            <td>@ViewBag.TrenutnoPoruceno.StatusPor</td>
-        </tr>
-        }
-        else
-        {
-            <td colspan="7">Ceka se dostavljac da prihvati porudzbinu</td>
-        }
-    </table>
-
+    @if (ViewBag.TrenutnoPoruceno.StaPorucuje != null)
+    {
+        <h1>Trenutna Porudzbina</h1><br />
+        <table>
+            <tr>
+                <th colspan="7">Vasa porudzbina</th>
+            </tr>
+                <tr>
+                    <th>Proizvodi koji su poruceni</th>
+                    <th>Kolicina po proizvodu</th>
+                    <th>Adresa</th>
+                    <th>Email</th>
+                    <th>Komentar</th>
+                    <th>Cena</th>
+                    <th>Status</th>
+                </tr>
+                <tr>
+                    <td>@ViewBag.TrenutnoPoruceno.StaPorucuje</td>
+                    <td>@ViewBag.TrenutnoPoruceno.Kolicina</td>
+                    <td>@ViewBag.TrenutnoPoruceno.Adresa</td>
+                    <td>@ViewBag.TrenutnoPoruceno.Email</td>
+                    <td>@ViewBag.TrenutnoPoruceno.Komentar</td>
+                    <td>@ViewBag.TrenutnoPoruceno.Cena</td>
+                    <td>@ViewBag.TrenutnoPoruceno.StatusPor</td>
+                </tr>
+        </table>
+    }
 
     <br /><br /><br /><br /><br />
 </body>

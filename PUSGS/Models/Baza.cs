@@ -321,7 +321,7 @@ namespace PUSGS.Models
             {
                 try
                 {
-                    string komanda = "INSERT INTO PUSGS.dbo.Porudzbina(StaPorucuje,Adresa,Komentar,Cena,StatusPor,DostavljacID) VALUES (@StaPorucuje,@Adresa,@Komentar,@Cena,@StatusPor,@DostavljacID)";
+                    string komanda = "INSERT INTO PUSGS.dbo.Porudzbina(StaPorucuje,Adresa,Komentar,Cena,StatusPor) VALUES (@StaPorucuje,@Adresa,@Komentar,@Cena,@StatusPor)";
                     
                     SqlCommand cmd = new SqlCommand(komanda, connection);
 
@@ -331,7 +331,6 @@ namespace PUSGS.Models
                     cmd.Parameters.AddWithValue("@Komentar", porudzbina.Komentar);
                     cmd.Parameters.AddWithValue("@Cena", porudzbina.Cena);
                     cmd.Parameters.AddWithValue("@StatusPor", porudzbina.Status);
-                    cmd.Parameters.AddWithValue("@DostavljacID", "niko");
 
                     connection.Open();
                     cmd.ExecuteNonQuery();
@@ -347,12 +346,15 @@ namespace PUSGS.Models
                             {
                                 if (j == 0)
                                 {
-                                    string komanda2 = "INSERT INTO PUSGS.dbo.Poruceno(StaPorucuje,Proizvod,Kolicina,Email) VALUES (@StaPorucuje,@Proizvod,@Kolicina,@Email)";
+                                    int josUvekNepoznat = -1;
+
+                                    string komanda2 = "INSERT INTO PUSGS.dbo.Poruceno(StaPorucuje,Proizvod,Kolicina,Email,DostavljacID) VALUES (@StaPorucuje,@Proizvod,@Kolicina,@Email,@DostavljacID)";
                                     SqlCommand cmd2 = new SqlCommand(komanda2, connection);
                                     cmd2.Parameters.AddWithValue("@StaPorucuje", porudzbina.StaPorucuje);
                                     cmd2.Parameters.AddWithValue("@Proizvod", proizvod[i]);
                                     cmd2.Parameters.AddWithValue("@Kolicina", kolicina[i]);
                                     cmd2.Parameters.AddWithValue("@Email", email);
+                                    cmd2.Parameters.AddWithValue("@DostavljacID", josUvekNepoznat);
 
                                     connection.Open();
                                     cmd2.ExecuteNonQuery();
