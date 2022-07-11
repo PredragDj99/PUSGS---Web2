@@ -61,8 +61,8 @@
             color: black;
             text-decoration: none;
             font-family: Arial;
-            font-size: 15px;
-            padding: 8px 15px;
+            font-size: 18px;
+            padding: 6px 18px;
         }
 
             .linkButton:hover {
@@ -181,14 +181,15 @@
     <h1>Trenutna Porudzbina</h1><br />
     <table>
         <tr>
-            <th colspan="6">Vasa porudzbina</th>
+            <th colspan="7">Vasa porudzbina</th>
         </tr>
-        @if (ViewBag.TrenutnoPoruceno != null)
+        @if (ViewBag.por == "Poruceno")
         {
         <tr>
             <th>Proizvodi koji su poruceni</th>
             <th>Kolicina po proizvodu</th>
             <th>Adresa</th>
+            <th>Email</th>
             <th>Komentar</th>
             <th>Cena</th>
             <th>Status</th>
@@ -197,14 +198,15 @@
             <td>@ViewBag.TrenutnoPoruceno.StaPorucuje</td>
             <td>@ViewBag.TrenutnoPoruceno.Kolicina</td>
             <td>@ViewBag.TrenutnoPoruceno.Adresa</td>
+            <td>@ViewBag.TrenutnoPoruceno.Email</td>
             <td>@ViewBag.TrenutnoPoruceno.Komentar</td>
             <td>@ViewBag.TrenutnoPoruceno.Cena</td>
-            <td>@ViewBag.TrenutnoPoruceno.Status</td>
+            <td>@ViewBag.TrenutnoPoruceno.StatusPor</td>
         </tr>
         }
         else
         {
-            <td colspan="6">Ceka se dostavljac da prihvati porudzbinu</td>
+            <td colspan="7">Ceka se dostavljac da prihvati porudzbinu</td>
         }
     </table>
 

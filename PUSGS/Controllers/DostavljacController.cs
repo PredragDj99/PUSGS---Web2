@@ -10,6 +10,8 @@ namespace PUSGS.Controllers
 {
     public class DostavljacController : Controller
     {
+        public static string zauzet = "";
+
         // GET: Dostavljac
         public ActionResult Index()
         {
@@ -53,6 +55,7 @@ namespace PUSGS.Controllers
         }
         #endregion
 
+        #region Prikaz novih porudzbina(ako je zauzet ne moze da ih prihvati)
         public ActionResult NovePorudzbine()
         {
             #region Status verifikacije
@@ -85,8 +88,52 @@ namespace PUSGS.Controllers
             }
             #endregion
 
+            List<SpojeneTabele> svePor = Baza.PrikazPorudzbina();
+            List<SpojeneTabele> prikaz = new List<SpojeneTabele>();
+            foreach (var item in svePor)
+            {
+                if(item.StatusPor == "Poruceno")
+                {
+                    prikaz.Add(item);
+                }
+            }
+            if (zauzet == "zauzet")
+            {
+                ViewBag.zauzet = "zauzet";
+            }
+            ViewBag.por = "Poruceno";
+            ViewBag.prikaz = prikaz;
+
             return View();
         }
+        #endregion
+
+        #region Prihvati dostavu
+        public ActionResult PrihvatiDostavu(string email, string status)
+        {
+            zauzet = "zauzet";
+            List<SpojeneTabele> svePor = Baza.PrikazPorudzbina();
+            List<SpojeneTabele> prikaz = new List<SpojeneTabele>();
+            foreach (var item in svePor)
+            {
+                if(item.Email==email && item.StatusPor==status)
+                {
+                    item.StatusPor = "U toku";
+                    ViewBag.zauzet = "zauzet";
+                    Baza.DostavljacPrihvatioPorudzbinu(item);
+                }
+
+                if (item.StatusPor == "Poruceno")
+                {
+                    prikaz.Add(item);
+                }
+            }
+            ViewBag.por = "Poruceno";
+            ViewBag.prikaz = prikaz;
+
+            return View("NovePorudzbine");
+        }
+        #endregion
 
         public ActionResult MojePorudzbine()
         {

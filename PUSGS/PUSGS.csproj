@@ -133,6 +133,7 @@
     <Compile Include="Models\KorisnikType.cs" />
     <Compile Include="Models\Porudzbina.cs" />
     <Compile Include="Models\Proizvod.cs" />
+    <Compile Include="Models\SpojeneTabele.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

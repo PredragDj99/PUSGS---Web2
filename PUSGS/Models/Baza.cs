@@ -315,7 +315,7 @@ namespace PUSGS.Models
         #endregion region
 
         #region Nova porudzbina
-        public static void NovaPorudzbina(Porudzbina porudzbina, List<string> proizvod, List<int> kolicina)
+        public static void NovaPorudzbina(Porudzbina porudzbina, List<string> proizvod, List<int> kolicina,string email)
         {
             using (SqlConnection connection = new SqlConnection(myCon))
             {
@@ -346,11 +346,12 @@ namespace PUSGS.Models
                             {
                                 if (j == 0)
                                 {
-                                    string komanda2 = "INSERT INTO PUSGS.dbo.Poruceno(StaPorucuje,Proizvod,Kolicina) VALUES (@StaPorucuje,@Proizvod,@Kolicina)";
+                                    string komanda2 = "INSERT INTO PUSGS.dbo.Poruceno(StaPorucuje,Proizvod,Kolicina,Email) VALUES (@StaPorucuje,@Proizvod,@Kolicina,@Email)";
                                     SqlCommand cmd2 = new SqlCommand(komanda2, connection);
                                     cmd2.Parameters.AddWithValue("@StaPorucuje", porudzbina.StaPorucuje);
                                     cmd2.Parameters.AddWithValue("@Proizvod", proizvod[i]);
                                     cmd2.Parameters.AddWithValue("@Kolicina", kolicina[i]);
+                                    cmd2.Parameters.AddWithValue("@Email", email);
 
                                     connection.Open();
                                     cmd2.ExecuteNonQuery();
@@ -394,15 +395,15 @@ namespace PUSGS.Models
         #endregion
 
         #region Sve porudzbine
-        public static List<Porudzbina> PrikazPorudzbina()
+        public static List<SpojeneTabele> PrikazPorudzbina()
         {
-            List<Porudzbina> porudzbine = new List<Porudzbina>();
+            List<SpojeneTabele> porudzbine = new List<SpojeneTabele>();
 
             using (SqlConnection connection = new SqlConnection(myCon))
             {
                 try
                 {
-                    string komanda = "SELECT Proizvod,Kolicina,Adresa,Komentar,Cena,StatusPor FROM PUSGS.dbo.Porudzbina JOIN PUSGS.dbo.Poruceno ON Poruceno.StaPorucuje=Porudzbina.StaPorucuje";
+                    string komanda = "SELECT Porudzbina.StaPorucuje,Proizvod,Kolicina,Email,Adresa,Komentar,Cena,StatusPor FROM PUSGS.dbo.Porudzbina JOIN PUSGS.dbo.Poruceno ON Poruceno.StaPorucuje=Porudzbina.StaPorucuje";
 
                     SqlCommand cmd = new SqlCommand(komanda, connection);
 
@@ -411,15 +412,17 @@ namespace PUSGS.Models
                     {
                         while (dr.Read())
                         {
-                            Porudzbina p = new Porudzbina();
+                            SpojeneTabele p = new SpojeneTabele();
 
                             //string id = dr[0].ToString();
                             p.StaPorucuje = dr[0].ToString();
-                            p.Kolicina = dr[1].ToString();
-                            p.Adresa = dr[2].ToString();
-                            p.Komentar = dr[3].ToString();
-                            p.Cena = Double.Parse(dr[4].ToString());
-                            p.Status = dr[5].ToString();
+                            p.Proizvod = dr[1].ToString();
+                            p.Kolicina = dr[2].ToString();
+                            p.Email = dr[3].ToString();
+                            p.Adresa = dr[4].ToString();
+                            p.Komentar = dr[5].ToString();
+                            p.Cena = Double.Parse(dr[6].ToString());
+                            p.StatusPor = dr[7].ToString();
 
                             porudzbine.Add(p);
                         }
@@ -435,6 +438,36 @@ namespace PUSGS.Models
                         connection.Close();
                     }
                     return porudzbine;
+                }
+            }
+        }
+        #endregion
+
+        #region Dostavljac prihvatio porudzbinu
+        public static void DostavljacPrihvatioPorudzbinu(SpojeneTabele porudzbina)
+        {
+            using (SqlConnection connection = new SqlConnection(myCon))
+            {
+                try
+                {
+                    string komanda = "UPDATE PUSGS.dbo.Porudzbina SET StatusPor=@StatusPor WHERE StaPorucuje=@StaPorucuje";
+
+                    SqlCommand cmd = new SqlCommand(komanda, connection);
+
+                    //Sifra porucenog
+                    cmd.Parameters.AddWithValue("@StaPorucuje", porudzbina.StaPorucuje);
+                    cmd.Parameters.AddWithValue("@StatusPor", porudzbina.StatusPor);
+
+                    connection.Open();
+                    cmd.ExecuteNonQuery();
+                    connection.Close();
+                }
+                catch (Exception ex)
+                {
+                    if (connection.State == ConnectionState.Open)
+                    {
+                        connection.Close();
+                    }
                 }
             }
         }

@@ -53,7 +53,7 @@ namespace PUSGS.Controllers
         #region Prikaz svih porudzbina
         public ActionResult SvePorudzbine()
         {
-            List<Porudzbina> svePorudzbine = Baza.PrikazPorudzbina();
+            List<SpojeneTabele> svePorudzbine = Baza.PrikazPorudzbina();
 
             ViewBag.prikazPorudzbina = svePorudzbine;
 

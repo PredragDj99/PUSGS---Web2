@@ -12,7 +12,7 @@ namespace PUSGS.Controllers
     {
         public static List<Proizvod> porucuje = new List<Proizvod>();
         private double dostava = 200;
-        public static Porudzbina aktivna = new Porudzbina();
+        public static SpojeneTabele aktivna = new SpojeneTabele();
 
         // GET: Potrosac
         public ActionResult Index()
@@ -35,6 +35,23 @@ namespace PUSGS.Controllers
         #region Kreiranje nove porudzbine
         public ActionResult NovaTrenutnaPorudzbina()
         {
+            Korisnik user = (Korisnik)Session["user"];
+            #region Trenutno poruceno
+            var trenutno = Baza.PrikazPorudzbina();
+            foreach (var item in trenutno)
+            {
+                if (item.StatusPor == "Poruceno" && item.Email == user.Email)
+                {
+                    aktivna = item;
+                }
+            }
+            ViewBag.por = "Poruceno";
+            ViewBag.TrenutnoPoruceno = aktivna;
+            #endregion
+            //Ovde treba da prikaze porudzbinu kod koje odbrojava, a ne moze da se ostavi TrenutnoPoruceno = aktivna jer je prazno
+            //ViewBag.por = "Poruceno";
+            //ViewBag.TrenutnoPoruceno = aktivna;
+
             List<Proizvod> listaProizvoda = Baza.PrikazProizvoda();
             ViewBag.prikazProizvoda = listaProizvoda;
 
@@ -47,6 +64,18 @@ namespace PUSGS.Controllers
         public ActionResult NapraviPorudzbinu(string imeProizvoda, string cena,string sastojci)
         {
             Korisnik user = (Korisnik)Session["user"];
+            #region Trenutno poruceno
+            var trenutno = Baza.PrikazPorudzbina();
+            foreach (var item in trenutno)
+            {
+                if (item.StatusPor == "Poruceno" && item.Email == user.Email)
+                {
+                    aktivna = item;
+                }
+            }
+            ViewBag.por = "Poruceno";
+            ViewBag.TrenutnoPoruceno = aktivna;
+            #endregion
 
             List<Proizvod> listaProizvoda = Baza.PrikazProizvoda();
             ViewBag.prikazProizvoda = listaProizvoda;
@@ -100,12 +129,14 @@ namespace PUSGS.Controllers
                 proizod.Add(item.ImeProizvoda);
                 kolicina.Add(Int32.Parse(formCollection[naziv]));
             }
+
+            ViewBag.por = "Poruceno";
             //Nista nije naruceno
             if (ukupnaCena == 200)
             {
                 ViewBag.por = "Morate imati bar 1 proizvod da biste porucili dostavu!";
             }
-            else if(ViewBag.TrenutnoPoruceno != null)
+            else if(ViewBag.TrenutnoPoruceno.StaPorucuje != null)
             {
                 ViewBag.por = "Ne mozete imati vise porudzbina istovremeno!";
             }
@@ -127,14 +158,14 @@ namespace PUSGS.Controllers
 
                 Porudzbina porudzbina = new Porudzbina(staPorucuje, "", adresa, komentar, ukupnaCena, "Poruceno");
                 //porudzbina, listu proizvoda, listu za kolicinu
-                Baza.NovaPorudzbina(porudzbina, proizod, kolicina);
+                Baza.NovaPorudzbina(porudzbina, proizod, kolicina, user.Email);
             }
 
             #region Trenutno poruceno
             var trenutno = Baza.PrikazPorudzbina();
             foreach (var item in trenutno)
             {
-                if (item.Status == "Poruceno" && item.Adresa==adresa)
+                if (item.StatusPor == "Poruceno" && item.Adresa==adresa)
                 {
                     aktivna=item;
                 }
@@ -156,12 +187,12 @@ namespace PUSGS.Controllers
         public ActionResult PrethodnePorudzbine()
         {
             Korisnik user = (Korisnik)Session["user"];
-            List<Porudzbina> svePorudzbine = Baza.PrikazPorudzbina();
-            List<Porudzbina> mojePorudzine = new List<Porudzbina>();
+            List<SpojeneTabele> svePorudzbine = Baza.PrikazPorudzbina();
+            List<SpojeneTabele> mojePorudzine = new List<SpojeneTabele>();
 
             foreach (var item in svePorudzbine)
             {
-                if(item.Adresa==user.Adresa && item.Status == "Dostavljena")
+                if(item.Adresa==user.Adresa && item.StatusPor == "Dostavljena")
                 {
                     mojePorudzine.Add(item);
                 }

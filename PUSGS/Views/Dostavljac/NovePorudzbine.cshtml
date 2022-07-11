@@ -13,23 +13,40 @@
             margin-left: 20px;
         }
 
-        .button {
-            border: 2px solid #008CBA;
-            border-radius: 50%;
-            background-color: white;
-            color: black;
-            padding: 16px 32px;
+        table, th, td {
+            border: 2px solid;
             text-align: center;
-            text-decoration: none;
-            display: inline-block;
-            font-size: 16px;
-            margin: 4px 2px;
-            transition-duration: 0.4s;
-            cursor: pointer;
+            padding-left: 10px;
+            padding-right: 10px;
+            padding-top: 4px;
+            padding-bottom: 3px;
+            border-left-color: blue;
+            border-right-color: blue;
+            border-top-color: blue;
+            border-bottom-color: blue;
+            font-size: 18px;
         }
 
-            .button:hover {
-                background-color: #008CBA;
+        th {
+            background-color: lightskyblue;
+        }
+
+        tr:nth-child(even) {
+            background-color: #f2f2f2
+        }
+
+        .linkButton {
+            background-color: greenyellow;
+            color: black;
+            text-decoration: none;
+            font-family: Arial;
+            font-size: 18px;
+            padding: 4px 20px;
+        }
+
+            .linkButton:hover {
+                background-color: green;
+                text-decoration: none;
                 color: white;
             }
 
@@ -90,7 +107,33 @@
     }
     else if (ViewBag.statusVerifikacije != "Zahtev je odbijen" && ViewBag.statusVerifikacije != "Zahtev se procesira")
     {
-
+        <table>
+            <tr>
+                <th>Proizvodi koji su poruceni</th>
+                <th>Kolicina po proizvodu</th>
+                <th>Adresa</th>
+                <th>Email</th>
+                <th>Komentar</th>
+                <th>Cena</th>
+                <th>Status</th>
+            </tr>
+            @foreach (var item in ViewBag.prikaz)
+            {
+            <tr>
+                <td>@item.StaPorucuje</td>
+                <td>@item.Kolicina</td>
+                <td>@item.Adresa</td>
+                <td>@item.Email</td>
+                <td>@item.Komentar</td>
+                <td>@item.Cena</td>
+                <td>@item.StatusPor</td>
+                @if (ViewBag.zauzet != "zauzet")
+                {
+                    <td><a class="linkButton" href="/Dostavljac/PrihvatiDostavu?email=@item.Email&&status=@item.StatusPor">Prihvati&nbsp;dostavu</a></td>
+                }
+            </tr>
+            }
+        </table>
     }
 
 </body>
