@@ -137,6 +137,7 @@ namespace PUSGS.Controllers
             {
                 return RedirectToAction("Index", "Home");
             }
+
             #region Validacija
             if (korisnik.KorisnickoIme == "")
             {

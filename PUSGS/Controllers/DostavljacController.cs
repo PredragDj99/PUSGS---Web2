@@ -376,6 +376,7 @@ namespace PUSGS.Controllers
             }
 
             #region Update
+            korisnik.Verifikovan = user.Verifikovan;
             Korisnik k = Baza.UpdateProfila(korisnik, user.Email);
 
             if (k.Email !=null)

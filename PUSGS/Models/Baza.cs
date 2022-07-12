@@ -32,6 +32,7 @@ namespace PUSGS.Models
                     cmd.Parameters.AddWithValue("@Adresa", korisnik.Adresa);
                     cmd.Parameters.AddWithValue("@TipKorisnika", korisnik.TipKorisnika.ToString());
                     cmd.Parameters.AddWithValue("@Slika", korisnik.Slika);
+                    if (korisnik.Verifikovan == null) korisnik.Verifikovan = "NULL";
                     cmd.Parameters.AddWithValue("@Verifikovan", korisnik.Verifikovan);
 
                     connection.Open();
@@ -125,6 +126,7 @@ namespace PUSGS.Models
                     cmd.Parameters.AddWithValue("@Adresa", novProfil.Adresa);
                     cmd.Parameters.AddWithValue("@TipKorisnika", novProfil.TipKorisnika.ToString());
                     cmd.Parameters.AddWithValue("@Slika", novProfil.Slika);
+                    if (novProfil.Verifikovan == null) novProfil.Verifikovan = "NULL";
                     cmd.Parameters.AddWithValue("@Verifikovan", novProfil.Verifikovan);
 
                     //podaci starog profila
