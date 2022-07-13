@@ -1,0 +1,94 @@
+CREATE TABLE [dbo].[Korisnik](
+	[ID] [int] IDENTITY(1,1) NOT NULL,
+	[KorisnickoIme] [varchar](30) NOT NULL,
+	[Email] [varchar](30) NOT NULL,
+	[Lozinka] [varchar](30) NOT NULL,
+	[Ime] [varchar](30) NOT NULL,
+	[Prezime] [varchar](30) NOT NULL,
+	[DatumRodjenja] [varchar](30) NOT NULL,
+	[Adresa] [varchar](30) NOT NULL,
+	[TipKorisnika] [varchar](30) NOT NULL,
+	[Slika] [varchar](30) NULL,
+	[Verifikovan] [varchar](30) NULL,
+ CONSTRAINT [PK_Korisnik] PRIMARY KEY CLUSTERED 
+(
+	[ID] ASC
+)WITH (PAD_INDEX  = OFF, STATISTICS_NORECOMPUTE  = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS  = ON, ALLOW_PAGE_LOCKS  = ON) ON [PRIMARY]
+) ON [PRIMARY]
+
+
+
+
+
+
+CREATE TABLE [dbo].[Poruceno](
+	[ID] [int] IDENTITY(1,1) NOT NULL,
+	[StaPorucuje] [nvarchar](50) NOT NULL,
+	[Proizvod] [nvarchar](200) NOT NULL,
+	[Kolicina] [nvarchar](50) NOT NULL,
+	[Email] [nvarchar](50) NOT NULL,
+	[DostavljacID] [int] NOT NULL,
+ CONSTRAINT [PK_Poruceno] PRIMARY KEY CLUSTERED 
+(
+	[ID] ASC
+)WITH (PAD_INDEX  = OFF, STATISTICS_NORECOMPUTE  = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS  = ON, ALLOW_PAGE_LOCKS  = ON) ON [PRIMARY]
+) ON [PRIMARY]
+
+
+
+
+
+
+CREATE TABLE [dbo].[Porudzbina](
+	[ID] [int] IDENTITY(1,1) NOT NULL,
+	[StaPorucuje] [varchar](200) NOT NULL,
+	[Adresa] [varchar](30) NOT NULL,
+	[Komentar] [varchar](100) NULL,
+	[Cena] [float] NOT NULL,
+	[StatusPor] [varchar](30) NULL,
+ CONSTRAINT [PK_Porudzbina] PRIMARY KEY CLUSTERED 
+(
+	[ID] ASC
+)WITH (PAD_INDEX  = OFF, STATISTICS_NORECOMPUTE  = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS  = ON, ALLOW_PAGE_LOCKS  = ON) ON [PRIMARY]
+) ON [PRIMARY]
+
+
+
+
+
+
+CREATE TABLE [dbo].[Proizvod](
+	[ID] [int] IDENTITY(1,1) NOT NULL,
+	[ImeProizvoda] [varchar](30) NOT NULL,
+	[Cena] [float] NOT NULL,
+	[Sastojci] [varchar](250) NOT NULL,
+ CONSTRAINT [PK_Proizvod] PRIMARY KEY CLUSTERED 
+(
+	[ID] ASC
+)WITH (PAD_INDEX  = OFF, STATISTICS_NORECOMPUTE  = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS  = ON, ALLOW_PAGE_LOCKS  = ON) ON [PRIMARY]
+) ON [PRIMARY]
+
+
+
+
+
+
+CREATE TABLE [dbo].[Stoperica](
+	[ID] [int] IDENTITY(1,1) NOT NULL,
+	[VremePorucivanja] [varchar](50) NOT NULL,
+	[SifraPorudzbine] [varchar](50) NOT NULL,
+ CONSTRAINT [PK_Stoperica] PRIMARY KEY CLUSTERED 
+(
+	[ID] ASC
+)WITH (PAD_INDEX  = OFF, STATISTICS_NORECOMPUTE  = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS  = ON, ALLOW_PAGE_LOCKS  = ON) ON [PRIMARY]
+) ON [PRIMARY]
+
+
+
+
+
+
+
+
+
+
