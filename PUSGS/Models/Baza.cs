@@ -10,43 +10,51 @@ namespace PUSGS.Models
 {
     public class Baza
     {
+        private static readonly object zakljucajResurs = new object();
+        private static readonly object zakljucajResurs1= new object();
+        private static readonly object zakljucajResurs2 = new object();
+        private static readonly object zakljucajResurs3 = new object();
         static string myCon = ConfigurationManager.ConnectionStrings["Myconnection"].ConnectionString;
 
+        //Registracija i prijava koriste isti Lock da bi se videlo da li postoji korisnik sa tim imejlom
         #region Dodaj korisnika -> Registruj
         public static bool DodajKorisnika(Korisnik korisnik)
         {
-            using (SqlConnection connection = new SqlConnection(myCon))
+            lock (zakljucajResurs)
             {
-                try
+                using (SqlConnection connection = new SqlConnection(myCon))
                 {
-                    string komanda = "INSERT INTO PUSGS.dbo.Korisnik(KorisnickoIme,Email,Lozinka,Ime,Prezime,DatumRodjenja,Adresa,TipKorisnika,Slika,Verifikovan) VALUES (@KorisnickoIme,@Email,@Lozinka,@Ime,@Prezime,@DatumRodjenja,@Adresa,@TipKorisnika,@Slika,@Verifikovan)";
-
-                    SqlCommand cmd = new SqlCommand(komanda, connection);
-
-                    cmd.Parameters.AddWithValue("@KorisnickoIme", korisnik.KorisnickoIme);
-                    cmd.Parameters.AddWithValue("@Email", korisnik.Email);
-                    cmd.Parameters.AddWithValue("@Lozinka", korisnik.Lozinka);
-                    cmd.Parameters.AddWithValue("@Ime", korisnik.Ime);
-                    cmd.Parameters.AddWithValue("@Prezime", korisnik.Prezime);
-                    cmd.Parameters.AddWithValue("@DatumRodjenja", korisnik.DatumRodjenja.ToString("dd/MM/yyyy"));
-                    cmd.Parameters.AddWithValue("@Adresa", korisnik.Adresa);
-                    cmd.Parameters.AddWithValue("@TipKorisnika", korisnik.TipKorisnika.ToString());
-                    cmd.Parameters.AddWithValue("@Slika", korisnik.Slika);
-                    if (korisnik.Verifikovan == null) korisnik.Verifikovan = "NULL";
-                    cmd.Parameters.AddWithValue("@Verifikovan", korisnik.Verifikovan);
-
-                    connection.Open();
-                    cmd.ExecuteNonQuery();
-                    connection.Close();
-                    return true;
-                }
-                catch (Exception ex)
-                {
-                    if (connection.State == ConnectionState.Open)
+                    try
                     {
+                        string komanda = "INSERT INTO PUSGS.dbo.Korisnik(KorisnickoIme,Email,Lozinka,Ime,Prezime,DatumRodjenja,Adresa,TipKorisnika,Slika,Verifikovan) VALUES (@KorisnickoIme,@Email,@Lozinka,@Ime,@Prezime,@DatumRodjenja,@Adresa,@TipKorisnika,@Slika,@Verifikovan)";
+
+                        SqlCommand cmd = new SqlCommand(komanda, connection);
+
+                        cmd.Parameters.AddWithValue("@KorisnickoIme", korisnik.KorisnickoIme);
+                        cmd.Parameters.AddWithValue("@Email", korisnik.Email);
+                        cmd.Parameters.AddWithValue("@Lozinka", korisnik.Lozinka);
+                        cmd.Parameters.AddWithValue("@Ime", korisnik.Ime);
+                        cmd.Parameters.AddWithValue("@Prezime", korisnik.Prezime);
+                        cmd.Parameters.AddWithValue("@DatumRodjenja", korisnik.DatumRodjenja.ToString("dd/MM/yyyy"));
+                        cmd.Parameters.AddWithValue("@Adresa", korisnik.Adresa);
+                        cmd.Parameters.AddWithValue("@TipKorisnika", korisnik.TipKorisnika.ToString());
+                        cmd.Parameters.AddWithValue("@Slika", korisnik.Slika);
+                        if (korisnik.Verifikovan == null) korisnik.Verifikovan = "NULL";
+                        cmd.Parameters.AddWithValue("@Verifikovan", korisnik.Verifikovan);
+
+                        connection.Open();
+                        cmd.ExecuteNonQuery();
                         connection.Close();
+                        return true;
                     }
-                    return false;
+                    catch (Exception ex)
+                    {
+                        if (connection.State == ConnectionState.Open)
+                        {
+                            connection.Close();
+                        }
+                        return false;
+                    }
                 }
             }
         }
@@ -55,50 +63,53 @@ namespace PUSGS.Models
         #region Prijavi se
         public static Korisnik PrijaviSe(string email, string lozinka)
         {
-            Korisnik k = new Korisnik();
-
-            using (SqlConnection connection = new SqlConnection(myCon))
+            lock (zakljucajResurs)
             {
-                try
+                Korisnik k = new Korisnik();
+
+                using (SqlConnection connection = new SqlConnection(myCon))
                 {
-                    string komanda = "SELECT * FROM PUSGS.dbo.Korisnik WHERE Email=@Email AND Lozinka=@Lozinka";
-
-                    SqlCommand cmd = new SqlCommand(komanda, connection);
-
-                    cmd.Parameters.AddWithValue("@Email", email);
-                    cmd.Parameters.AddWithValue("@Lozinka", lozinka);
-
-                    connection.Open();
-                    using (SqlDataReader dr = cmd.ExecuteReader())
+                    try
                     {
-                        while (dr.Read())
+                        string komanda = "SELECT * FROM PUSGS.dbo.Korisnik WHERE Email=@Email AND Lozinka=@Lozinka";
+
+                        SqlCommand cmd = new SqlCommand(komanda, connection);
+
+                        cmd.Parameters.AddWithValue("@Email", email);
+                        cmd.Parameters.AddWithValue("@Lozinka", lozinka);
+
+                        connection.Open();
+                        using (SqlDataReader dr = cmd.ExecuteReader())
                         {
-                            string id = dr[0].ToString();
-                            k.KorisnickoIme = dr[1].ToString();
-                            k.Email = dr[2].ToString();
-                            k.Lozinka = dr[3].ToString();
-                            k.Ime = dr[4].ToString();
-                            k.Prezime = dr[5].ToString();
-                            k.DatumRodjenja = DateTime.ParseExact(dr[6].ToString(), "dd/MM/yyyy", null);
-                            k.Adresa = dr[7].ToString();
-                            k.TipKorisnika = (KorisnikType)Enum.Parse(typeof(KorisnikType), dr[8].ToString());
-                            k.Slika = dr[9].ToString();
-                            k.Verifikovan = dr[10].ToString();
+                            while (dr.Read())
+                            {
+                                string id = dr[0].ToString();
+                                k.KorisnickoIme = dr[1].ToString();
+                                k.Email = dr[2].ToString();
+                                k.Lozinka = dr[3].ToString();
+                                k.Ime = dr[4].ToString();
+                                k.Prezime = dr[5].ToString();
+                                k.DatumRodjenja = DateTime.ParseExact(dr[6].ToString(), "dd/MM/yyyy", null);
+                                k.Adresa = dr[7].ToString();
+                                k.TipKorisnika = (KorisnikType)Enum.Parse(typeof(KorisnikType), dr[8].ToString());
+                                k.Slika = dr[9].ToString();
+                                k.Verifikovan = dr[10].ToString();
+                            }
                         }
-                    }
-                    //vraca samo ID
-                    //string vrednost = Convert.ToString(cmd.ExecuteScalar());
-                    connection.Close();
-
-                    return k;
-                }
-                catch (Exception ex)
-                {
-                    if (connection.State == ConnectionState.Open)
-                    {
+                        //vraca samo ID
+                        //string vrednost = Convert.ToString(cmd.ExecuteScalar());
                         connection.Close();
+
+                        return k;
                     }
-                    return k;
+                    catch (Exception ex)
+                    {
+                        if (connection.State == ConnectionState.Open)
+                        {
+                            connection.Close();
+                        }
+                        return k;
+                    }
                 }
             }
         }
@@ -107,43 +118,47 @@ namespace PUSGS.Models
         #region Update profila
         public static Korisnik UpdateProfila(Korisnik novProfil,string stariEmail)
         {
-            Korisnik k = new Korisnik();
-
-            using (SqlConnection connection = new SqlConnection(myCon))
+            //Zakljucavam da se u isto vreme ne bi menjao profil na 2 strane
+            lock (zakljucajResurs1)
             {
-                try
+                Korisnik k = new Korisnik();
+
+                using (SqlConnection connection = new SqlConnection(myCon))
                 {
-                    string komanda = "UPDATE PUSGS.dbo.Korisnik SET KorisnickoIme=@KorisnickoIme , Email=@Email , Lozinka=@Lozinka , Ime=@Ime , Prezime=@Prezime , DatumRodjenja=@DatumRodjenja , Adresa=@Adresa , TipKorisnika=@TipKorisnika , Slika=@Slika , Verifikovan=@Verifikovan WHERE Email=@stariEmail";
-
-                    SqlCommand cmd = new SqlCommand(komanda, connection);
-
-                    cmd.Parameters.AddWithValue("@KorisnickoIme", novProfil.KorisnickoIme);
-                    cmd.Parameters.AddWithValue("@Email", novProfil.Email);
-                    cmd.Parameters.AddWithValue("@Lozinka", novProfil.Lozinka);
-                    cmd.Parameters.AddWithValue("@Ime", novProfil.Ime);
-                    cmd.Parameters.AddWithValue("@Prezime", novProfil.Prezime);
-                    cmd.Parameters.AddWithValue("@DatumRodjenja", novProfil.DatumRodjenja.ToString("dd/MM/yyyy"));
-                    cmd.Parameters.AddWithValue("@Adresa", novProfil.Adresa);
-                    cmd.Parameters.AddWithValue("@TipKorisnika", novProfil.TipKorisnika.ToString());
-                    cmd.Parameters.AddWithValue("@Slika", novProfil.Slika);
-                    if (novProfil.Verifikovan == null) novProfil.Verifikovan = "NULL";
-                    cmd.Parameters.AddWithValue("@Verifikovan", novProfil.Verifikovan);
-
-                    //podaci starog profila
-                    cmd.Parameters.AddWithValue("@stariEmail", stariEmail);
-
-                    connection.Open();
-                    cmd.ExecuteNonQuery();
-                    connection.Close();
-                    return novProfil;
-                }
-                catch (Exception ex)
-                {
-                    if (connection.State == ConnectionState.Open)
+                    try
                     {
+                        string komanda = "UPDATE PUSGS.dbo.Korisnik SET KorisnickoIme=@KorisnickoIme , Email=@Email , Lozinka=@Lozinka , Ime=@Ime , Prezime=@Prezime , DatumRodjenja=@DatumRodjenja , Adresa=@Adresa , TipKorisnika=@TipKorisnika , Slika=@Slika , Verifikovan=@Verifikovan WHERE Email=@stariEmail";
+
+                        SqlCommand cmd = new SqlCommand(komanda, connection);
+
+                        cmd.Parameters.AddWithValue("@KorisnickoIme", novProfil.KorisnickoIme);
+                        cmd.Parameters.AddWithValue("@Email", novProfil.Email);
+                        cmd.Parameters.AddWithValue("@Lozinka", novProfil.Lozinka);
+                        cmd.Parameters.AddWithValue("@Ime", novProfil.Ime);
+                        cmd.Parameters.AddWithValue("@Prezime", novProfil.Prezime);
+                        cmd.Parameters.AddWithValue("@DatumRodjenja", novProfil.DatumRodjenja.ToString("dd/MM/yyyy"));
+                        cmd.Parameters.AddWithValue("@Adresa", novProfil.Adresa);
+                        cmd.Parameters.AddWithValue("@TipKorisnika", novProfil.TipKorisnika.ToString());
+                        cmd.Parameters.AddWithValue("@Slika", novProfil.Slika);
+                        if (novProfil.Verifikovan == null) novProfil.Verifikovan = "NULL";
+                        cmd.Parameters.AddWithValue("@Verifikovan", novProfil.Verifikovan);
+
+                        //podaci starog profila
+                        cmd.Parameters.AddWithValue("@stariEmail", stariEmail);
+
+                        connection.Open();
+                        cmd.ExecuteNonQuery();
                         connection.Close();
+                        return novProfil;
                     }
-                    return k;
+                    catch (Exception ex)
+                    {
+                        if (connection.State == ConnectionState.Open)
+                        {
+                            connection.Close();
+                        }
+                        return k;
+                    }
                 }
             }
         }
@@ -203,40 +218,44 @@ namespace PUSGS.Models
         #region Postojanje proizvoda
         public static Proizvod PostojanjeProizvoda(string imeProizvoda)
         {
-            Proizvod p = new Proizvod();
-
-            using (SqlConnection connection = new SqlConnection(myCon))
+            //Zakljucavam da se u isto vreme ne bi dodala 2 ista proizvoda, ovo je onaj kao kod upisivanja
+            lock (zakljucajResurs2)
             {
-                try
+                Proizvod p = new Proizvod();
+
+                using (SqlConnection connection = new SqlConnection(myCon))
                 {
-                    string komanda = "SELECT * FROM PUSGS.dbo.Proizvod WHERE ImeProizvoda=@ImeProizvoda";
-
-                    SqlCommand cmd = new SqlCommand(komanda, connection);
-
-                    cmd.Parameters.AddWithValue("@ImeProizvoda", imeProizvoda);
-
-                    connection.Open();
-                    using (SqlDataReader dr = cmd.ExecuteReader())
+                    try
                     {
-                        while (dr.Read())
+                        string komanda = "SELECT * FROM PUSGS.dbo.Proizvod WHERE ImeProizvoda=@ImeProizvoda";
+
+                        SqlCommand cmd = new SqlCommand(komanda, connection);
+
+                        cmd.Parameters.AddWithValue("@ImeProizvoda", imeProizvoda);
+
+                        connection.Open();
+                        using (SqlDataReader dr = cmd.ExecuteReader())
                         {
-                            string id = dr[0].ToString();
-                            p.ImeProizvoda = dr[1].ToString();
-                            p.Cena = Double.Parse(dr[2].ToString());
-                            p.Sastojci = dr[3].ToString();
+                            while (dr.Read())
+                            {
+                                string id = dr[0].ToString();
+                                p.ImeProizvoda = dr[1].ToString();
+                                p.Cena = Double.Parse(dr[2].ToString());
+                                p.Sastojci = dr[3].ToString();
+                            }
                         }
-                    }
-                    connection.Close();
-
-                    return p;
-                }
-                catch (Exception ex)
-                {
-                    if (connection.State == ConnectionState.Open)
-                    {
                         connection.Close();
+
+                        return p;
                     }
-                    return p;
+                    catch (Exception ex)
+                    {
+                        if (connection.State == ConnectionState.Open)
+                        {
+                            connection.Close();
+                        }
+                        return p;
+                    }
                 }
             }
         }
@@ -245,27 +264,31 @@ namespace PUSGS.Models
         #region Dodaj proizvod
         public static void DodajProizvod(Proizvod proizvod)
         {
-            using (SqlConnection connection = new SqlConnection(myCon))
+            //Zakljucavam da se u isto vreme ne bi dodala 2 ista proizvoda, ovo je onaj kao kod citanja
+            lock (zakljucajResurs2)
             {
-                try
+                using (SqlConnection connection = new SqlConnection(myCon))
                 {
-                    string komanda = "INSERT INTO PUSGS.dbo.Proizvod(ImeProizvoda,Cena,Sastojci) VALUES (@ImeProizvoda,@Cena,@Sastojci)";
-
-                    SqlCommand cmd = new SqlCommand(komanda, connection);
-
-                    cmd.Parameters.AddWithValue("@ImeProizvoda", proizvod.ImeProizvoda);
-                    cmd.Parameters.AddWithValue("@Cena", proizvod.Cena.ToString());
-                    cmd.Parameters.AddWithValue("@Sastojci", proizvod.Sastojci);
-
-                    connection.Open();
-                    cmd.ExecuteNonQuery();
-                    connection.Close();
-                }
-                catch (Exception ex)
-                {
-                    if (connection.State == ConnectionState.Open)
+                    try
                     {
+                        string komanda = "INSERT INTO PUSGS.dbo.Proizvod(ImeProizvoda,Cena,Sastojci) VALUES (@ImeProizvoda,@Cena,@Sastojci)";
+
+                        SqlCommand cmd = new SqlCommand(komanda, connection);
+
+                        cmd.Parameters.AddWithValue("@ImeProizvoda", proizvod.ImeProizvoda);
+                        cmd.Parameters.AddWithValue("@Cena", proizvod.Cena.ToString());
+                        cmd.Parameters.AddWithValue("@Sastojci", proizvod.Sastojci);
+
+                        connection.Open();
+                        cmd.ExecuteNonQuery();
                         connection.Close();
+                    }
+                    catch (Exception ex)
+                    {
+                        if (connection.State == ConnectionState.Open)
+                        {
+                            connection.Close();
+                        }
                     }
                 }
             }
@@ -448,57 +471,96 @@ namespace PUSGS.Models
         }
         #endregion
 
-        #region Dostavljac prihvatio porudzbinu
-        public static void DostavljacPrihvatioPorudzbinu(SpojeneTabele porudzbina, Korisnik korisnik)
+        #region Porudzbina je dostavljena nakon isteka vremena
+        public static void PorudzbinaJeDostavljena(SpojeneTabele porudzbinaDostavljena)
         {
             using (SqlConnection connection = new SqlConnection(myCon))
             {
-
                 try
                 {
-                    string komandaTrazi = "SELECT ID FROM PUSGS.dbo.Korisnik WHERE Email=@Email";
+                    string komanda = "UPDATE PUSGS.dbo.Porudzbina SET StatusPor=@StatusPor WHERE StaPorucuje=@StaPorucuje";
 
-                    SqlCommand cmdTr = new SqlCommand(komandaTrazi, connection);
+                    SqlCommand cmd = new SqlCommand(komanda, connection);
 
-                    cmdTr.Parameters.AddWithValue("@Email", korisnik.Email);
+                    cmd.Parameters.AddWithValue("@StatusPor", porudzbinaDostavljena.StatusPor);
+                    cmd.Parameters.AddWithValue("@StaPorucuje", porudzbinaDostavljena.StaPorucuje);
 
                     connection.Open();
-                    int dostavljacID=0;
-                    using (SqlDataReader dr = cmdTr.ExecuteReader())
-                    {
-                        while (dr.Read())
-                        {
-                            dostavljacID = Int32.Parse(dr[0].ToString());
-                        }
-                    }
+                    cmd.ExecuteNonQuery();
                     connection.Close();
+                }
+                catch (Exception ex)
+                {
+                    if (connection.State == ConnectionState.Open)
+                    {
+                        connection.Close();
+                    }
+                }
+            }
+        }
+        #endregion
 
+        #region Dostavljac prihvatio porudzbinu
+        public static void DostavljacPrihvatioPorudzbinu(SpojeneTabele porudzbina, Korisnik korisnik)
+        {
+            //zakljucavam resurs da ne bi 2 dostavljaca kliknula istu porudzbinu u isto vreme i pristupala bazi istovremeno
+            lock (zakljucajResurs3)
+            {
+                using (SqlConnection connection = new SqlConnection(myCon))
+                {
                     try
                     {
-                        string komanda = "UPDATE PUSGS.dbo.Porudzbina SET StatusPor=@StatusPor WHERE StaPorucuje=@StaPorucuje";
+                        string komandaTrazi = "SELECT ID FROM PUSGS.dbo.Korisnik WHERE Email=@Email";
 
-                        SqlCommand cmd = new SqlCommand(komanda, connection);
+                        SqlCommand cmdTr = new SqlCommand(komandaTrazi, connection);
 
-                        //Sifra porucenog
-                        cmd.Parameters.AddWithValue("@StaPorucuje", porudzbina.StaPorucuje);
-                        cmd.Parameters.AddWithValue("@StatusPor", porudzbina.StatusPor);
+                        cmdTr.Parameters.AddWithValue("@Email", korisnik.Email);
 
                         connection.Open();
-                        cmd.ExecuteNonQuery();
+                        int dostavljacID = 0;
+                        using (SqlDataReader dr = cmdTr.ExecuteReader())
+                        {
+                            while (dr.Read())
+                            {
+                                dostavljacID = Int32.Parse(dr[0].ToString());
+                            }
+                        }
                         connection.Close();
 
-                        // -----------------------------------------
+                        try
+                        {
+                            string komanda = "UPDATE PUSGS.dbo.Porudzbina SET StatusPor=@StatusPor WHERE StaPorucuje=@StaPorucuje";
 
-                        string komanda2 = "UPDATE PUSGS.dbo.Poruceno SET DostavljacID = @DostavljacID WHERE StaPorucuje=@StaPorucuje";
-                        SqlCommand cmd2 = new SqlCommand(komanda2, connection);
+                            SqlCommand cmd = new SqlCommand(komanda, connection);
 
-                        //Sifra porucenog
-                        cmd2.Parameters.AddWithValue("@StaPorucuje", porudzbina.StaPorucuje);
-                        cmd2.Parameters.AddWithValue("@DostavljacID", dostavljacID);
+                            //Sifra porucenog
+                            cmd.Parameters.AddWithValue("@StaPorucuje", porudzbina.StaPorucuje);
+                            cmd.Parameters.AddWithValue("@StatusPor", porudzbina.StatusPor);
 
-                        connection.Open();
-                        cmd2.ExecuteNonQuery();
-                        connection.Close();
+                            connection.Open();
+                            cmd.ExecuteNonQuery();
+                            connection.Close();
+
+                            // -----------------------------------------
+
+                            string komanda2 = "UPDATE PUSGS.dbo.Poruceno SET DostavljacID = @DostavljacID WHERE StaPorucuje=@StaPorucuje";
+                            SqlCommand cmd2 = new SqlCommand(komanda2, connection);
+
+                            //Sifra porucenog
+                            cmd2.Parameters.AddWithValue("@StaPorucuje", porudzbina.StaPorucuje);
+                            cmd2.Parameters.AddWithValue("@DostavljacID", dostavljacID);
+
+                            connection.Open();
+                            cmd2.ExecuteNonQuery();
+                            connection.Close();
+                        }
+                        catch (Exception ex)
+                        {
+                            if (connection.State == ConnectionState.Open)
+                            {
+                                connection.Close();
+                            }
+                        }
                     }
                     catch (Exception ex)
                     {
@@ -506,13 +568,6 @@ namespace PUSGS.Models
                         {
                             connection.Close();
                         }
-                    }
-                }
-                catch (Exception ex)
-                {
-                    if (connection.State == ConnectionState.Open)
-                    {
-                        connection.Close();
                     }
                 }
             }

@@ -25,32 +25,55 @@
                 color: white;
             }
 
-        td {
+        table.ukras, th.ukras, td.ukras {
+            border: 1px solid;
+            text-align: center;
+            padding-left: 10px;
+            padding-right: 10px;
+            padding-top: 4px;
+            padding-bottom: 3px;
+            border-left-color: blue;
+            border-right-color: blue;
+            border-top-color: blue;
+            border-bottom-color: blue;
+            font-size: 18px;
+        }
+
+        th.ukras {
+            background-color: lightskyblue;
+        }
+
+        tr.ukras:nth-child(even) {
+            background-color: #f2f2f2
+        }
+
+        td.neUkras {
             padding-top: 2px;
             padding-bottom: 2px;
             padding-right: 2px;
             padding-left: 15px;
         }
 
-            td:first-child {
+            td.neUkras:first-child {
                 padding-left: 2px;
                 padding-right: 0;
             }
 
-        h1{
-            padding-top:20px;
-            text-align:center;
+        h1 {
+            padding-top: 20px;
+            text-align: center;
         }
 
         input[type="text"] {
             width: 300px;
             border-bottom: 2px solid red;
-            border-top:none;
-            border-left:none;
-            border-right:none;
+            border-top: none;
+            border-left: none;
+            border-right: none;
         }
-        label{
-            font-size:15px;
+
+        label {
+            font-size: 15px;
         }
     </style>
 </head>
@@ -78,25 +101,42 @@
     </div>
 
     <h1>Dodavanje proizvoda</h1><br />
-    
+
     <form action="~/Admin/DodajProizvod" method="post">
         <table>
-            <tr>
-                <td><label>Ime proizvoda: </label></td>
-                <td><input type="text" name="imeProizvoda" required="required" /></td>
+            <tr class="neUkras">
+                <td class="neUkras"><label>Ime proizvoda: </label></td>
+                <td class="neUkras"><input type="text" name="imeProizvoda" required="required" /></td>
             </tr>
-            <tr>
-                <td><label>Cena: </label></td>
-                <td><input type="text" name="cena" required="required" /></td>
+            <tr class="neUkras">
+                <td class="neUkras"><label>Cena: </label></td>
+                <td class="neUkras"><input type="text" name="cena" required="required" /></td>
             </tr>
-            <tr>
-                <td><label>Sastojci: </label></td>
-                <td><input type="text" name="sastojci" required="required" /></td>
+            <tr class="neUkras">
+                <td class="neUkras"><label>Sastojci: </label></td>
+                <td class="neUkras"><input type="text" name="sastojci" required="required" /></td>
             </tr>
         </table><br />
         <input type="submit" class="button" value="Dodaj proizvod" />
     </form><br /><br />
-    <h2>@ViewBag.uspesno</h2>
+    <h2>@ViewBag.uspesno</h2><br />
+
+    <table class="ukras">
+        <tr class="ukras"><th class="ukras" colspan="3">Spisak postojecih proizvoda restorana</th></tr>
+        <tr class="ukras">
+            <th class="ukras">Ime proizvoda</th>
+            <th class="ukras">Cena</th>
+            <th class="ukras">Sastojci</th>
+        </tr>
+        @foreach (var item in ViewBag.proizvodi)
+        {
+            <tr class="ukras">
+                <td class="ukras">@item.ImeProizvoda</td>
+                <td class="ukras">@item.Cena</td>
+                <td class="ukras">@item.Sastojci</td>
+            </tr>
+        }
+    </table>
 
 </body>
 </html>

@@ -95,6 +95,10 @@ namespace PUSGS.Controllers
             {
                 return RedirectToAction("Index", "Home");
             }
+
+            var sviProizvodi = Baza.PrikazProizvoda();
+            ViewBag.proizvodi = sviProizvodi;
+
             return View();
         }
 
@@ -123,6 +127,9 @@ namespace PUSGS.Controllers
             {
                 ViewBag.uspesno = "Proizvod sa unetim nazivom vec postoji";
             }
+
+            var sviProizvodi = Baza.PrikazProizvoda();
+            ViewBag.proizvodi = sviProizvodi;
 
             return View("DodavanjeProizvoda");
         }

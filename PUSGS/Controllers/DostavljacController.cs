@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Threading;
 using System.Web;
 using System.Web.Mvc;
 
@@ -282,24 +283,40 @@ namespace PUSGS.Controllers
                 //da li ova porudzbina vec ima neko vreme porucivanja u bazi
                 string vecZabelezeno = Baza.ProcitajSveStoperice(sifraPorudzbine);
                 //ako postoji neka vrednost onda je vec upisano vreme
-                if (vecZabelezeno =="")
+                if (vecZabelezeno == "")
                 {
                     //ako vec postoji procitaj iz baze, a ako ne onda samo pokreni
                     Random rnd = new Random();
                     int vremeMinute = rnd.Next(1, 30);
-                    int vremeSekunde = rnd.Next(1,60);
+                    int vremeSekunde = 0;
+
+                    DateTime trenutnoIPomeraj = DateTime.Now.AddMinutes(vremeMinute);
+                    Baza.DodajVremeStoperica(trenutnoIPomeraj, sifraPorudzbine);
+
+                    DateTime trenutno = DateTime.Now;
+                    int minute = (trenutnoIPomeraj - trenutno).Minutes;
+                    int sekunde = (trenutnoIPomeraj - trenutno).Seconds;
                     ViewBag.vremeMinute = vremeMinute;
                     ViewBag.vremeSekunde = vremeSekunde;
-
-                    Baza.DodajVremeStoperica(DateTime.Now, sifraPorudzbine);
                 }
-                //prosledi ono staro vreme
-                double minute = (DateTime.Now - DateTime.Parse(vecZabelezeno)).TotalMinutes;
-                double sekunde = (DateTime.Now - DateTime.Parse(vecZabelezeno)).TotalSeconds;
-                string[] realMin = minute.ToString().Split('.');
-                string[] realSec = sekunde.ToString().Split('.');
-                ViewBag.vremeMinute = int.Parse(realMin[0]);
-                ViewBag.vremeSekunde = int.Parse(realSec[0]);
+                else
+                {
+                    //prosledi ono staro vreme
+                    DateTime trenutn = DateTime.Now;
+                    int minute = (DateTime.Parse(vecZabelezeno) - trenutn).Minutes;
+                    int sekunde = (DateTime.Parse(vecZabelezeno) - trenutn).Seconds;
+
+                    //ako je vreme isteklo
+                    if (DateTime.Compare(trenutn, DateTime.Parse(vecZabelezeno)) > 0)
+                    {
+                        por.StatusPor = "Dostavljena";
+                    }
+                    else
+                    {
+                        ViewBag.vremeMinute = minute;
+                        ViewBag.vremeSekunde = sekunde;
+                    }
+                }
             }
 
             return View();

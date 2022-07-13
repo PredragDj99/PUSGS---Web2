@@ -178,7 +178,7 @@
         <h2>@ViewBag.por</h2><br />
     }
 
-    @if (ViewBag.TrenutnoPoruceno.StaPorucuje != null)
+    @if (ViewBag.TrenutnoPoruceno != null) //.StaPorucuje
     {
         <h1>Trenutna Porudzbina</h1><br />
         <table>
@@ -209,11 +209,11 @@
     @if (ViewBag.odbrojavanje == "krenulo")
     {
         <h2>Vreme do dostave</h2>
-        <h2 id="random">Vreme</h2>
+        <h2 id="random">Porudzbina uspesno dostavljena!</h2>
         <script>
             let min = @ViewBag.vremeMinute; //ovo je vrednost iz kontrolera nakon oduzimanja
             let sek = @ViewBag.vremeSekunde; //ovo je vrednost iz kontrolera nakon oduzimanja
-            var countDownTarget = new Date().getTime() + min * sek * 1000;
+            var countDownTarget = new Date().getTime() + (min * 60 + sek) * 1000;
 
             function showClock(target) {
                 const distance = target - new Date().getTime();
@@ -231,6 +231,7 @@
                 showClock(countDownTarget);
                 if (countDownTarget - new Date().getTime() < 0) {
                     clearInterval(x);
+                    location.reload();
                 }
             }, 1000);
         </script>

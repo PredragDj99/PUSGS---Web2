@@ -55,23 +55,47 @@ namespace PUSGS.Controllers
                 }
             }
             ViewBag.por = "Poruceno";
-            ViewBag.TrenutnoPoruceno = aktivna;
-            #endregion
 
-            sifraPorudzbine = aktivna.StaPorucuje;
-            //stoperica krece kada dostavljac prihvati dostavu
-            if (aktivna.StatusPor == "U toku")
+            // nakon sto istekne vreme vise ne prikazuje
+            if (aktivna.StatusPor != "Dostavljena")
             {
-                ViewBag.odbrojavanje = "krenulo";
+                ViewBag.TrenutnoPoruceno = aktivna;
+                #endregion
 
-                string vecZabelezeno = Baza.ProcitajSveStoperice(sifraPorudzbine);
+                sifraPorudzbine = aktivna.StaPorucuje;
+                //stoperica krece kada dostavljac prihvati dostavu
+                if (aktivna.StatusPor == "U toku")
+                {
+                    ViewBag.odbrojavanje = "krenulo";
 
-                double minute = (DateTime.Now - DateTime.Parse(vecZabelezeno)).TotalMinutes;
-                double sekunde = (DateTime.Now - DateTime.Parse(vecZabelezeno)).TotalSeconds;
-                string[] realMin = minute.ToString().Split('.');
-                string[] realSec = sekunde.ToString().Split('.');
-                ViewBag.vremeMinute = int.Parse(realMin[0]);
-                ViewBag.vremeSekunde = int.Parse(realSec[0]);
+                    string vecZabelezeno = Baza.ProcitajSveStoperice(sifraPorudzbine);
+
+                    DateTime tren = DateTime.Now;
+                    int minute = (DateTime.Parse(vecZabelezeno) - tren).Minutes;
+                    int sekunde = (DateTime.Parse(vecZabelezeno) - tren).Seconds;
+
+                    //ako je vreme isteklo
+                    if (DateTime.Compare(tren, DateTime.Parse(vecZabelezeno)) > 0)
+                    {
+                        aktivna.StatusPor = "Dostavljena";
+
+                        var svePorIzBaze = Baza.PrikazPorudzbina();
+                        foreach (var item in svePorIzBaze)
+                        {
+                            if (item.StatusPor == "U toku" && item.Email == user.Email)
+                            {
+                                //UPDATE BAZE
+                                item.StatusPor = "Dostavljena";
+                                Baza.PorudzbinaJeDostavljena(item);
+                            }
+                        }
+                    }
+                    else
+                    {
+                        ViewBag.vremeMinute = minute;
+                        ViewBag.vremeSekunde = sekunde;
+                    }
+                }
             }
 
             List<Proizvod> listaProizvoda = Baza.PrikazProizvoda();
@@ -257,7 +281,7 @@ namespace PUSGS.Controllers
 
             foreach (var item in svePorudzbine)
             {
-                if(item.Adresa==user.Adresa && item.StatusPor == "Dostavljena")
+                if(item.Email==user.Email && item.StatusPor == "Dostavljena")
                 {
                     mojePorudzine.Add(item);
                 }
