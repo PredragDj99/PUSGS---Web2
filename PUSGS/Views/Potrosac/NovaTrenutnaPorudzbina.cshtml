@@ -185,25 +185,55 @@
             <tr>
                 <th colspan="7">Vasa porudzbina</th>
             </tr>
-                <tr>
-                    <th>Proizvodi koji su poruceni</th>
-                    <th>Kolicina po proizvodu</th>
-                    <th>Adresa</th>
-                    <th>Email</th>
-                    <th>Komentar</th>
-                    <th>Cena</th>
-                    <th>Status</th>
-                </tr>
-                <tr>
-                    <td>@ViewBag.TrenutnoPoruceno.StaPorucuje</td>
-                    <td>@ViewBag.TrenutnoPoruceno.Kolicina</td>
-                    <td>@ViewBag.TrenutnoPoruceno.Adresa</td>
-                    <td>@ViewBag.TrenutnoPoruceno.Email</td>
-                    <td>@ViewBag.TrenutnoPoruceno.Komentar</td>
-                    <td>@ViewBag.TrenutnoPoruceno.Cena</td>
-                    <td>@ViewBag.TrenutnoPoruceno.StatusPor</td>
-                </tr>
+            <tr>
+                <th>Proizvodi koji su poruceni</th>
+                <th>Kolicina po proizvodu</th>
+                <th>Adresa</th>
+                <th>Email</th>
+                <th>Komentar</th>
+                <th>Cena</th>
+                <th>Status</th>
+            </tr>
+            <tr>
+                <td>@ViewBag.TrenutnoPoruceno.StaPorucuje</td>
+                <td>@ViewBag.TrenutnoPoruceno.Kolicina</td>
+                <td>@ViewBag.TrenutnoPoruceno.Adresa</td>
+                <td>@ViewBag.TrenutnoPoruceno.Email</td>
+                <td>@ViewBag.TrenutnoPoruceno.Komentar</td>
+                <td>@ViewBag.TrenutnoPoruceno.Cena</td>
+                <td>@ViewBag.TrenutnoPoruceno.StatusPor</td>
+            </tr>
         </table>
+    }<br />
+
+    @if (ViewBag.odbrojavanje == "krenulo")
+    {
+        <h2>Vreme do dostave</h2>
+        <h2 id="random">Vreme</h2>
+        <script>
+            let min = @ViewBag.vremeMinute; //ovo je vrednost iz kontrolera nakon oduzimanja
+            let sek = @ViewBag.vremeSekunde; //ovo je vrednost iz kontrolera nakon oduzimanja
+            var countDownTarget = new Date().getTime() + min * sek * 1000;
+
+            function showClock(target) {
+                const distance = target - new Date().getTime();
+                const mins = distance < 0 ? 0 : Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+                const secs = distance < 0 ? 0 : Math.floor((distance % (1000 * 60)) / 1000);
+
+                // Output the results
+                document.getElementById("random").innerHTML = mins + ":" + secs;
+            }
+
+            showClock(countDownTarget);
+
+            // Update the count down every 1 second
+            var x = setInterval(function () {
+                showClock(countDownTarget);
+                if (countDownTarget - new Date().getTime() < 0) {
+                    clearInterval(x);
+                }
+            }, 1000);
+        </script>
     }
 
     <br /><br /><br /><br /><br />

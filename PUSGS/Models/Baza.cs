@@ -562,7 +562,7 @@ namespace PUSGS.Models
                             {
                                 SpojeneTabele proizvod = new SpojeneTabele();
 
-                                proizvod.StatusPor = dr[0].ToString();
+                                proizvod.StaPorucuje = dr[0].ToString();
                                 proizvod.Proizvod = dr[1].ToString();
                                 proizvod.Kolicina = dr[2].ToString();
                                 proizvod.Adresa = dr[3].ToString();
@@ -595,6 +595,73 @@ namespace PUSGS.Models
                         connection.Close();
                     }
                     return porudzbine;
+                }
+            }
+        }
+        #endregion
+
+        #region Dodaj vreme tajmera
+        public static void DodajVremeStoperica(DateTime vremePokretanjaStoperice,string sifraPorudzbine)
+        {
+            using (SqlConnection connection = new SqlConnection(myCon))
+            {
+                try
+                {
+                    string komanda = "INSERT INTO PUSGS.dbo.Stoperica(VremePorucivanja,SifraPorudzbine) VALUES (@VremePorucivanja,@SifraPorudzbine)";
+
+                    SqlCommand cmd = new SqlCommand(komanda, connection);
+
+                    cmd.Parameters.AddWithValue("@VremePorucivanja", vremePokretanjaStoperice.ToString());
+                    cmd.Parameters.AddWithValue("@SifraPorudzbine", sifraPorudzbine);
+
+                    connection.Open();
+                    cmd.ExecuteNonQuery();
+                    connection.Close();
+                }
+                catch (Exception ex)
+                {
+                    if (connection.State == ConnectionState.Open)
+                    {
+                        connection.Close();
+                    }
+                }
+            }
+        }
+        #endregion
+
+        #region Provera postoji li vec uneto vreme trajanja dostave
+        public static string ProcitajSveStoperice(string sifraPorudzbine)
+        {
+            string vratiVreme="";
+
+            using (SqlConnection connection = new SqlConnection(myCon))
+            {
+                try
+                {
+                    string komanda = "SELECT VremePorucivanja FROM PUSGS.dbo.Stoperica WHERE SifraPorudzbine=@SifraPorudzbine";
+
+                    SqlCommand cmd = new SqlCommand(komanda, connection);
+
+                    cmd.Parameters.AddWithValue("@SifraPorudzbine", sifraPorudzbine);
+
+                    connection.Open();
+                    using (SqlDataReader dr = cmd.ExecuteReader())
+                    {
+                        while (dr.Read())
+                        {
+                            vratiVreme = dr[0].ToString();
+                        }
+                    }
+                    connection.Close();
+                    return vratiVreme;
+                }
+                catch (Exception ex)
+                {
+                    if (connection.State == ConnectionState.Open)
+                    {
+                        connection.Close();
+                    }
+                    return vratiVreme;
                 }
             }
         }

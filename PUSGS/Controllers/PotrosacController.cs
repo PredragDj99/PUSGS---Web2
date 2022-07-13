@@ -36,6 +36,7 @@ namespace PUSGS.Controllers
         }
         #endregion
 
+        public static string sifraPorudzbine = "";
         #region Kreiranje nove porudzbine
         public ActionResult NovaTrenutnaPorudzbina()
         {
@@ -56,9 +57,22 @@ namespace PUSGS.Controllers
             ViewBag.por = "Poruceno";
             ViewBag.TrenutnoPoruceno = aktivna;
             #endregion
-            //Ovde treba da prikaze porudzbinu kod koje odbrojava, a ne moze da se ostavi TrenutnoPoruceno = aktivna jer je prazno
-            //ViewBag.por = "Poruceno";
-            //ViewBag.TrenutnoPoruceno = aktivna;
+
+            sifraPorudzbine = aktivna.StaPorucuje;
+            //stoperica krece kada dostavljac prihvati dostavu
+            if (aktivna.StatusPor == "U toku")
+            {
+                ViewBag.odbrojavanje = "krenulo";
+
+                string vecZabelezeno = Baza.ProcitajSveStoperice(sifraPorudzbine);
+
+                double minute = (DateTime.Now - DateTime.Parse(vecZabelezeno)).TotalMinutes;
+                double sekunde = (DateTime.Now - DateTime.Parse(vecZabelezeno)).TotalSeconds;
+                string[] realMin = minute.ToString().Split('.');
+                string[] realSec = sekunde.ToString().Split('.');
+                ViewBag.vremeMinute = int.Parse(realMin[0]);
+                ViewBag.vremeSekunde = int.Parse(realSec[0]);
+            }
 
             List<Proizvod> listaProizvoda = Baza.PrikazProizvoda();
             ViewBag.prikazProizvoda = listaProizvoda;
@@ -104,6 +118,11 @@ namespace PUSGS.Controllers
             ViewBag.por = "Poruceno";
             ViewBag.TrenutnoPoruceno = aktivna;
             #endregion
+            //stoperica krece kada dostavljac prihvati dostavu
+            if (aktivna.StatusPor == "U toku")
+            {
+                ViewBag.odbrojavanje = "krenulo";
+            }
 
             List<Proizvod> listaProizvoda = Baza.PrikazProizvoda();
             ViewBag.prikazProizvoda = listaProizvoda;
@@ -213,8 +232,11 @@ namespace PUSGS.Controllers
             ViewBag.TrenutnoPoruceno = aktivna;
             #endregion
 
-            //Prikazi sta je trenutno poruceno cim kliknem stranicu i vreme koje odbrojava
             //stoperica krece kada dostavljac prihvati dostavu
+            if (aktivna.StatusPor == "U toku")
+            {
+                ViewBag.odbrojavanje = "krenulo";
+            }
 
             porucuje.Clear();
             ViewBag.porucuje = porucuje;

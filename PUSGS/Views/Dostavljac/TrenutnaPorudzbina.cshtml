@@ -102,30 +102,61 @@
     {
         if (ViewBag.prikazKaoKodKorisnika.Proizvod != null)
         {
-        <table>
-            <tr>
-                <th colspan="7">Vasa trenutna porudzbina</th>
-            </tr>
-            <tr>
-                <th>Proizvodi koji su poruceni</th>
-                <th>Kolicina po proizvodu</th>
-                <th>Adresa</th>
-                <th>Email</th>
-                <th>Komentar</th>
-                <th>Cena</th>
-                <th>Status</th>
-            </tr>
-            <tr>
-                <td>@ViewBag.prikazKaoKodKorisnika.Proizvod</td>
-                <td>@ViewBag.prikazKaoKodKorisnika.Kolicina</td>
-                <td>@ViewBag.prikazKaoKodKorisnika.Adresa</td>
-                <td>@ViewBag.prikazKaoKodKorisnika.Email</td>
-                <td>@ViewBag.prikazKaoKodKorisnika.Komentar</td>
-                <td>@ViewBag.prikazKaoKodKorisnika.Cena</td>
-                <td>@ViewBag.prikazKaoKodKorisnika.StatusPor</td>
-            </tr>
-        </table>
+            <table>
+                <tr>
+                    <th colspan="7">Vasa trenutna porudzbina</th>
+                </tr>
+                <tr>
+                    <th>Proizvodi koji su poruceni</th>
+                    <th>Kolicina po proizvodu</th>
+                    <th>Adresa</th>
+                    <th>Email</th>
+                    <th>Komentar</th>
+                    <th>Cena</th>
+                    <th>Status</th>
+                </tr>
+                <tr>
+                    <td>@ViewBag.prikazKaoKodKorisnika.Proizvod</td>
+                    <td>@ViewBag.prikazKaoKodKorisnika.Kolicina</td>
+                    <td>@ViewBag.prikazKaoKodKorisnika.Adresa</td>
+                    <td>@ViewBag.prikazKaoKodKorisnika.Email</td>
+                    <td>@ViewBag.prikazKaoKodKorisnika.Komentar</td>
+                    <td>@ViewBag.prikazKaoKodKorisnika.Cena</td>
+                    <td>@ViewBag.prikazKaoKodKorisnika.StatusPor</td>
+                </tr>
+            </table>
         }
+    }
+    <br />
+
+    @if (ViewBag.odbrojavanje == "krenulo")
+    {
+        <h2>Vreme do dostave</h2>
+        <h2 id="random">Vreme</h2>
+        <script>
+            let min = @ViewBag.vremeMinute; //ovo je random vrednost iz kontrolera
+            let sek = @ViewBag.vremeSekunde; //ovo je random vrednost iz kontrolera
+            var countDownTarget = new Date().getTime() + min * sek * 1000;
+
+            function showClock(target) {
+                const distance = target - new Date().getTime();
+                const mins = distance < 0 ? 0 : Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+                const secs = distance < 0 ? 0 : Math.floor((distance % (1000 * 60)) / 1000);
+
+                // Output the results
+                document.getElementById("random").innerHTML = mins + ":" + secs;
+            }
+
+            showClock(countDownTarget);
+
+            // Update the count down every 1 second
+            var x = setInterval(function () {
+                showClock(countDownTarget);
+                if (countDownTarget - new Date().getTime() < 0) {
+                    clearInterval(x);
+                }
+            }, 1000);
+        </script>
     }
 
 </body>
