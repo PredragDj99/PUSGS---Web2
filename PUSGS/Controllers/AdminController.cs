@@ -211,7 +211,7 @@ namespace PUSGS.Controllers
                 return View("Index");
             }
 
-            if (korisnik.Slika == null)
+            if (file == null)
             {
                 korisnik.Slika = user.Slika;
             }

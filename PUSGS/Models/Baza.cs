@@ -26,7 +26,7 @@ namespace PUSGS.Models
                 {
                     try
                     {
-                        string komanda = "INSERT INTO PUSGS.dbo.Korisnik(KorisnickoIme,Email,Lozinka,Ime,Prezime,DatumRodjenja,Adresa,TipKorisnika,Slika,Verifikovan) VALUES (@KorisnickoIme,@Email,@Lozinka,@Ime,@Prezime,@DatumRodjenja,@Adresa,@TipKorisnika,@Slika,@Verifikovan)";
+                        string komanda = $"INSERT INTO PUSGS.dbo.Korisnik(KorisnickoIme,Email,Lozinka,Ime,Prezime,DatumRodjenja,Adresa,TipKorisnika,Slika,Verifikovan) VALUES (@KorisnickoIme,@Email,@Lozinka,@Ime,@Prezime,@DatumRodjenja,@Adresa,@TipKorisnika,{(korisnik.Slika!=null ? $"'{korisnik.Slika}'" : "NULL")},@Verifikovan)";
 
                         SqlCommand cmd = new SqlCommand(komanda, connection);
 
@@ -38,7 +38,7 @@ namespace PUSGS.Models
                         cmd.Parameters.AddWithValue("@DatumRodjenja", korisnik.DatumRodjenja.ToString("dd/MM/yyyy"));
                         cmd.Parameters.AddWithValue("@Adresa", korisnik.Adresa);
                         cmd.Parameters.AddWithValue("@TipKorisnika", korisnik.TipKorisnika.ToString());
-                        cmd.Parameters.AddWithValue("@Slika", korisnik.Slika);
+                        //cmd.Parameters.AddWithValue("@Slika", korisnik.Slika);
                         if (korisnik.Verifikovan == null) korisnik.Verifikovan = "NULL";
                         cmd.Parameters.AddWithValue("@Verifikovan", korisnik.Verifikovan);
 
