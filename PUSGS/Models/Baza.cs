@@ -529,30 +529,49 @@ namespace PUSGS.Models
 
                         try
                         {
-                            string komanda = "UPDATE PUSGS.dbo.Porudzbina SET StatusPor=@StatusPor WHERE StaPorucuje=@StaPorucuje";
-
-                            SqlCommand cmd = new SqlCommand(komanda, connection);
-
-                            //Sifra porucenog
-                            cmd.Parameters.AddWithValue("@StaPorucuje", porudzbina.StaPorucuje);
-                            cmd.Parameters.AddWithValue("@StatusPor", porudzbina.StatusPor);
-
+                            string komand = "SELECT StatusPor FROM PUSGS.dbo.Porudzbina WHERE StaPorucuje=@StaPorucuje";
+                            SqlCommand cmdProveraDaLiJeZauzet = new SqlCommand(komand, connection);
+                            cmdProveraDaLiJeZauzet.Parameters.AddWithValue("@StaPorucuje", porudzbina.StaPorucuje);
                             connection.Open();
-                            cmd.ExecuteNonQuery();
+                            string provera = "";
+                            using (SqlDataReader dr = cmdProveraDaLiJeZauzet.ExecuteReader())
+                            {
+                                while (dr.Read())
+                                {
+                                    provera = dr[0].ToString();
+                                }
+                            }
                             connection.Close();
 
-                            // -----------------------------------------
+                            if (provera == "Poruceno")
+                            {
 
-                            string komanda2 = "UPDATE PUSGS.dbo.Poruceno SET DostavljacID = @DostavljacID WHERE StaPorucuje=@StaPorucuje";
-                            SqlCommand cmd2 = new SqlCommand(komanda2, connection);
 
-                            //Sifra porucenog
-                            cmd2.Parameters.AddWithValue("@StaPorucuje", porudzbina.StaPorucuje);
-                            cmd2.Parameters.AddWithValue("@DostavljacID", dostavljacID);
+                                string komanda = "UPDATE PUSGS.dbo.Porudzbina SET StatusPor=@StatusPor WHERE StaPorucuje=@StaPorucuje";
 
-                            connection.Open();
-                            cmd2.ExecuteNonQuery();
-                            connection.Close();
+                                SqlCommand cmd = new SqlCommand(komanda, connection);
+
+                                //Sifra porucenog
+                                cmd.Parameters.AddWithValue("@StaPorucuje", porudzbina.StaPorucuje);
+                                cmd.Parameters.AddWithValue("@StatusPor", porudzbina.StatusPor);
+
+                                connection.Open();
+                                cmd.ExecuteNonQuery();
+                                connection.Close();
+
+                                // -----------------------------------------
+
+                                string komanda2 = "UPDATE PUSGS.dbo.Poruceno SET DostavljacID = @DostavljacID WHERE StaPorucuje=@StaPorucuje";
+                                SqlCommand cmd2 = new SqlCommand(komanda2, connection);
+
+                                //Sifra porucenog
+                                cmd2.Parameters.AddWithValue("@StaPorucuje", porudzbina.StaPorucuje);
+                                cmd2.Parameters.AddWithValue("@DostavljacID", dostavljacID);
+
+                                connection.Open();
+                                cmd2.ExecuteNonQuery();
+                                connection.Close();
+                            }
                         }
                         catch (Exception ex)
                         {
