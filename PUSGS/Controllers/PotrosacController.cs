@@ -219,7 +219,7 @@ namespace PUSGS.Controllers
             {
                 ViewBag.por = "Morate imati bar 1 proizvod da biste porucili dostavu!";
             }
-            else if(ViewBag.TrenutnoPoruceno.StaPorucuje != null)
+            else if(ViewBag.TrenutnoPoruceno.StaPorucuje != null && ViewBag.TrenutnoPoruceno.StatusPor != "Dostavljena")
             {
                 ViewBag.por = "Ne mozete imati vise porudzbina istovremeno!";
             }
