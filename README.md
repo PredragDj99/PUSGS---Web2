@@ -1,6 +1,5 @@
 # PUSGS---Web2
-Restoran
-Tekst zadatka dat u PDF-u
+Restoran - Tekst zadatka dat u PDF-u
 
     1. Pisanje SQL upita je problem ukoliko se baza modifikuje(bilo bi potrebno izmeniti veliki broj upita).
     U ovom slucaju postoji mali broj tabela pa nije predstavljalo problem.
